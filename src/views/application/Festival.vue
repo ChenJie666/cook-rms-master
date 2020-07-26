@@ -1,7 +1,48 @@
 <template>
     <div class="">
 
-        <el-table :data="records" style="width: 100%">
+        <!-- 添加记录 -->
+        <el-button type="text" @click="dialogFormVisible = true">添加记录</el-button>
+
+        <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+            <el-form :model="festivalBroadcast">
+                <el-form-item label="播报日期" label-width="120px">
+                    <!--                    <el-input v-model="festivalBroadcast.broadcastDay" autocomplete="off"></el-input>-->
+                    <span class="demonstration"></span>
+                    <el-date-picker
+                            v-model="festivalBroadcast.broadcastDay"
+                            type="date"
+                            placeholder="选择日期">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="上传文件" label-width="120px">
+                    <el-upload
+                            class="upload-demo"
+                            action="https://jsonplaceholder.typicode.com/posts/"
+                            :on-preview="handlePreview"
+                            :on-remove="handleRemove"
+                            :before-remove="beforeRemove"
+                            multiple
+                            :limit="3"
+                            :on-exceed="handleExceed"
+                            :file-list="file">
+                        <el-button size="small" type="primary">点击上传</el-button>
+                        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                    </el-upload>
+                </el-form-item>
+
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            </div>
+        </el-dialog>
+
+        <br>
+
+        <!-- 展示记录 -->
+        <el-table :data="records"
+                  style="width: 100%">
             <el-table-column type="expand">
                 <template slot-scope="props">
                     <el-form label-position="left" inline class="demo-table-expand">
@@ -44,7 +85,21 @@
             </el-table-column>
         </el-table>
 
+        <br>
+
+        <!-- 分页功能 -->
+        <span class="demonstration"></span>
+        <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="pageCurrent"
+                :page-sizes="[10,20,50,100]"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total">
+        </el-pagination>
     </div>
+
 </template>
 
 <style>
@@ -75,13 +130,27 @@
                 pages: 0,
                 records: [],
                 pageCurrent: 1,
-                pageSize: 5
+                pageSize: 10,
+                festivalBroadcast: {
+                    broadcastDay: "",
+                    url: "",
+                    timestamp: null,
+                    md5: null,
+                    size: null,
+                },
+                dialogFormVisible: false,
+                file: {
+                    webUrl: "",
+                    md5: "",
+                    size: null
+                }
             })
         },
         created() {
             this.getHolidayList(1)
         },
         methods: {
+            //增删改查功能
             getHolidayList(pageCurrent) {
                 this.pageCurrent = pageCurrent;
                 festival.getHolidayList(this.pageCurrent, this.pageSize)
@@ -91,11 +160,14 @@
                         this.total = data.total;
                         this.pages = data.pages;
                         this.records = data.records;
-                        this.pageCurrent = data.pageCurrent;
-                        this.pageSize = data.pageSize;
+                        this.pageCurrent = data.current;
+                        this.pageSize = data.size;
                     }).catch(error => {
                     console.log(error)
                 })
+            },
+            addHoliday() {
+                festival.addHoliday()
             },
             updateHoliday() {
                 festival.updateHoliday()
@@ -109,8 +181,8 @@
                     .then(() => {
                         festival.deleteHoliday(id)
                             .then(response => {
-                                this.getHolidayList(1)
-                                console.log(response)
+                                this.getHolidayList(1);
+                                console.log(response);
                                 this.$message({
                                     type: 'success',
                                     message: '删除成功!'
@@ -123,15 +195,29 @@
                         console.log(error)
                     });
             },
+            //分页功能
+            handleSizeChange(pageSize) {
+                this.pageSize = pageSize;
+                this.getHolidayList(this.pageCurrent)
+            },
+            handleCurrentChange(pageCurrent) {
+                this.pageCurrent = pageCurrent;
+                this.getHolidayList(this.pageCurrent)
+            },
+            //文件上传功能
+            handleRemove(file,fileList){
+                this.file = {webUrl: "",md5: "",size: null}
+            },
+            handlePreview(file){
 
-        },
-        computed: {
-            getFileName(url) {
-                console.log(url)
-                let number = url.lastIndexOf('/');
-                console.log(number)
-                return url.substr(number + 32)
+            },
+            handleExceed(files,fileList){
+
+            },
+            beforeRemove(file,fileList){
+                return this.$confirm(`确定移除该文件?`)
             }
-        }
+        },
+        computed: {}
     }
 </script>
