@@ -1,10 +1,10 @@
 <template>
-    <div class="">
+    <div class="FestivalList">
 
         <!-- 添加记录 -->
-        <el-button type="text" @click="dialogFormVisible = true">添加记录</el-button>
+        <el-button type="text" @click="dialogFormVisible = true">添加节日播报记录</el-button>
 
-        <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+        <el-dialog title="添加节日播报记录" :visible.sync="dialogFormVisible">
             <el-form :model="festivalBroadcast">
                 <el-form-item label="播报日期" label-width="120px">
                     <!--                    <el-input v-model="festivalBroadcast.broadcastDay" autocomplete="off"></el-input>-->
@@ -15,21 +15,17 @@
                             placeholder="选择日期">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="上传文件" label-width="120px">
-                    <el-upload
-                            class="upload-demo"
-                            action="https://jsonplaceholder.typicode.com/posts/"
-                            :on-preview="handlePreview"
-                            :on-remove="handleRemove"
-                            :before-remove="beforeRemove"
-                            multiple
-                            :limit="3"
-                            :on-exceed="handleExceed"
-                            :file-list="file">
-                        <el-button size="small" type="primary">点击上传</el-button>
-                        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-                    </el-upload>
-                </el-form-item>
+
+                <el-upload
+                        action="/cloud/application/upload"
+                        list-type="picture-card"
+                        :on-preview="handlePictureCardPreview"
+                        :on-remove="handleRemove">
+                    <i class="el-icon-plus"></i>
+                </el-upload>
+                <el-dialog :visible.sync="dialogVisible">
+                    <img width="100%" :src="fileVO.webUrl" alt="">
+                </el-dialog>
 
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -38,7 +34,6 @@
             </div>
         </el-dialog>
 
-        <br>
 
         <!-- 展示记录 -->
         <el-table :data="records"
@@ -139,7 +134,8 @@
                     size: null,
                 },
                 dialogFormVisible: false,
-                file: {
+                dialogVisible: false,
+                fileVO: {
                     webUrl: "",
                     md5: "",
                     size: null
@@ -205,17 +201,14 @@
                 this.getHolidayList(this.pageCurrent)
             },
             //文件上传功能
-            handleRemove(file,fileList){
-                this.file = {webUrl: "",md5: "",size: null}
+            handleRemove(file, fileList) {
+                console.log("handleRemove" + file, fileList);
+                this.fileVO.webUrl = {webUrl: "",md5: "",size: null};
             },
-            handlePreview(file){
-
-            },
-            handleExceed(files,fileList){
-
-            },
-            beforeRemove(file,fileList){
-                return this.$confirm(`确定移除该文件?`)
+            handlePictureCardPreview(file) {
+                console.log("handlePictureCardPreview:" + file)
+                this.dialogImageUrl = fileVO.webUrl;
+                this.dialogVisible = true;
             }
         },
         computed: {}
