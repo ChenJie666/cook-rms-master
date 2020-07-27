@@ -2,7 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="046bd5d9-360c-45c4-b015-25eab48ec9a6" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.cache/babel-loader/881c86f17578b83551b24c5aa8173177.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/babel-loader/881c86f17578b83551b24c5aa8173177.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.cache/babel-loader/b684173cec443ed1136ed95190531f9b.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/babel-loader/b684173cec443ed1136ed95190531f9b.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.cache/vue-loader/3e74b9855e9191a6f92e63a93279c10c.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/vue-loader/3e74b9855e9191a6f92e63a93279c10c.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.cache/vue-loader/668ae96998b14d8384195426d0ae18d7.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/vue-loader/668ae96998b14d8384195426d0ae18d7.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.cache/vue-loader/6cdd750ff564368018a0e905b77941fb.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/vue-loader/6cdd750ff564368018a0e905b77941fb.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.cache/vue-loader/70e6162992a388a35d21844b44c72b8f.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/vue-loader/70e6162992a388a35d21844b44c72b8f.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.cache/vue-loader/7d525d8cd0b51ac0d91c30b329641cc7.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/vue-loader/7d525d8cd0b51ac0d91c30b329641cc7.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.cache/vue-loader/8878270aa9269223183ffb968fda535f.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/vue-loader/8878270aa9269223183ffb968fda535f.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.cache/vue-loader/8c739537fd9359ba7e29b9bcf565730b.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/vue-loader/8c739537fd9359ba7e29b9bcf565730b.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.cache/vue-loader/bba9e9d91ac68e5759f1fbbac6d424b8.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/vue-loader/bba9e9d91ac68e5759f1fbbac6d424b8.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.cache/vue-loader/d0437a4b6158e60080a5b45a54405f5b.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/vue-loader/d0437a4b6158e60080a5b45a54405f5b.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.cache/vue-loader/dbabd77142b659aa8df6bcf821fa2070.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/vue-loader/dbabd77142b659aa8df6bcf821fa2070.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.cache/vue-loader/e6358f1ea7695d2d2473c180dd8fec9f.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/vue-loader/e6358f1ea7695d2d2473c180dd8fec9f.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.cache/vue-loader/f77d443dab7c9ba021cd57dccf0f6f51.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/vue-loader/f77d443dab7c9ba021cd57dccf0f6f51.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/application/devicepush.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/application/devicepush.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/application/shortmessage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/application/shortmessage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Home.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/application/DevicePush.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/application/DevicePush.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/application/Festival.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/application/Festival.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/application/ShortMessage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/application/ShortMessage.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,7 +50,8 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../bookkeep-vue" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="prettierjs.PrettierConfiguration.Package" value="C:\Users\Administrator\Desktop\cook-rms-master\node_modules\prettier" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
     <property name="ts.external.directory.path" value="E:\WebStorm 2019.3.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
@@ -39,6 +60,28 @@
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Administrator\Desktop\cook-rms-master\src\api\application" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="server" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="run" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="serve" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
   </component>
   <component name="ServiceViewManager">
     <option name="viewStates">
@@ -64,14 +107,45 @@
       <updated>1595639309869</updated>
       <workItem from="1595639313665" duration="15459000" />
       <workItem from="1595664060609" duration="8101000" />
-      <workItem from="1595768999839" duration="9077000" />
+      <workItem from="1595768999839" duration="9320000" />
+      <workItem from="1595812408002" duration="1689000" />
+      <workItem from="1595820436423" duration="27411000" />
     </task>
+    <task id="LOCAL-00001" summary="增加新增功能">
+      <created>1595820826289</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1595820826289</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="增加新增功能" />
+    <option name="LAST_COMMIT_MESSAGE" value="增加新增功能" />
+  </component>
   <component name="WindowStateProjectService">
+    <state x="729" y="339" width="1109" height="713" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595820469107">
+      <screen x="0" y="0" width="2560" height="1392" />
+    </state>
+    <state x="729" y="339" width="1109" height="713" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.2560.1392@0.0.2560.1392" timestamp="1595820469107" />
+    <state x="843" y="320" key="#run" timestamp="1595820345558">
+      <screen x="0" y="0" width="2560" height="1392" />
+    </state>
+    <state x="843" y="320" key="#run/0.0.2560.1392@0.0.2560.1392" timestamp="1595820345558" />
+    <state x="843" y="320" key="#server" timestamp="1595820335677">
+      <screen x="0" y="0" width="2560" height="1392" />
+    </state>
+    <state x="843" y="320" key="#server/0.0.2560.1392@0.0.2560.1392" timestamp="1595820335677" />
+    <state x="972" y="181" key="CommitChangelistDialog2" timestamp="1595820822276">
+      <screen x="0" y="0" width="2560" height="1392" />
+    </state>
+    <state x="1063" y="149" key="CommitChangelistDialog2/0.0.2048.1112@0.0.2048.1112" timestamp="1595783532004" />
+    <state x="972" y="181" key="CommitChangelistDialog2/0.0.2560.1392@0.0.2560.1392" timestamp="1595820822276" />
     <state x="469" y="322" key="FileChooserDialogImpl" timestamp="1595769629412">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
@@ -85,10 +159,35 @@
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
     <state x="832" y="262" key="Github.UntrackedFilesDialog/0.0.2048.1112@0.0.2048.1112" timestamp="1595769101177" />
+    <state width="2532" height="378" key="GridCell.Tab.0.bottom" timestamp="1595820363725">
+      <screen x="0" y="0" width="2560" height="1392" />
+    </state>
+    <state width="2532" height="378" key="GridCell.Tab.0.bottom/0.0.2560.1392@0.0.2560.1392" timestamp="1595820363725" />
+    <state width="2532" height="378" key="GridCell.Tab.0.center" timestamp="1595820363725">
+      <screen x="0" y="0" width="2560" height="1392" />
+    </state>
+    <state width="2532" height="378" key="GridCell.Tab.0.center/0.0.2560.1392@0.0.2560.1392" timestamp="1595820363725" />
+    <state width="2532" height="378" key="GridCell.Tab.0.left" timestamp="1595820363724">
+      <screen x="0" y="0" width="2560" height="1392" />
+    </state>
+    <state width="2532" height="378" key="GridCell.Tab.0.left/0.0.2560.1392@0.0.2560.1392" timestamp="1595820363724" />
+    <state width="2532" height="378" key="GridCell.Tab.0.right" timestamp="1595820363725">
+      <screen x="0" y="0" width="2560" height="1392" />
+    </state>
+    <state width="2532" height="378" key="GridCell.Tab.0.right/0.0.2560.1392@0.0.2560.1392" timestamp="1595820363725" />
     <state x="189" y="200" key="SettingsEditor" timestamp="1595769499423">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
     <state x="189" y="200" key="SettingsEditor/0.0.2048.1112@0.0.2048.1112" timestamp="1595769499423" />
     <state x="236" y="250" key="SettingsEditor/0.0.2560.1392@0.0.2560.1392" timestamp="1595644419629" />
+    <state x="1335" y="367" key="Vcs.Push.Dialog.v2" timestamp="1595820831512">
+      <screen x="0" y="0" width="2560" height="1392" />
+    </state>
+    <state x="1068" y="293" key="Vcs.Push.Dialog.v2/0.0.2048.1112@0.0.2048.1112" timestamp="1595783424052" />
+    <state x="1335" y="367" key="Vcs.Push.Dialog.v2/0.0.2560.1392@0.0.2560.1392" timestamp="1595820831512" />
+    <state x="319" y="310" width="840" height="1034" key="search.everywhere.popup" timestamp="1595848374964">
+      <screen x="0" y="0" width="2560" height="1392" />
+    </state>
+    <state x="319" y="310" width="840" height="1034" key="search.everywhere.popup/0.0.2560.1392@0.0.2560.1392" timestamp="1595848374964" />
   </component>
 </project>

@@ -1,9 +1,9 @@
 <template>
     <div class="FestivalList">
 
+        <br>
         <!-- 添加记录 -->
-        <el-button type="text" @click="dialogFormVisible = true">添加节日播报记录</el-button>
-
+        <el-button type="primary" @click="dialogFormVisible = true">添加节日播报记录</el-button>
         <el-dialog title="添加节日播报记录" :visible.sync="dialogFormVisible">
             <el-form :model="festivalBroadcast">
                 <el-form-item label="播报日期" label-width="120px">
@@ -12,7 +12,9 @@
                     <el-date-picker
                             v-model="festivalBroadcast.broadcastDay"
                             type="date"
-                            placeholder="选择日期">
+                            placeholder="选择日期"
+                            format="yyyy-MM-dd"
+                            value-format="yyyy-MM-dd">
                     </el-date-picker>
                 </el-form-item>
 
@@ -20,7 +22,8 @@
                         action="/cloud/application/upload"
                         list-type="picture-card"
                         :on-preview="handlePictureCardPreview"
-                        :on-remove="handleRemove">
+                        :on-remove="handleRemove"
+                        :on-success="handleSuccess">
                     <i class="el-icon-plus"></i>
                 </el-upload>
                 <el-dialog :visible.sync="dialogVisible">
@@ -30,10 +33,13 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                <el-button type="primary" @click="addHoliday">确 定</el-button>
+<!--                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
             </div>
         </el-dialog>
 
+        <br>
+        <br>
 
         <!-- 展示记录 -->
         <el-table :data="records"
@@ -74,7 +80,7 @@
             <el-table-column label="创建时间" prop="createTime"/>
             <el-table-column fixed="right" label="操作">
                 <template slot-scope="scope">
-                    <el-button @click="updateHoliday()" type="text" size="small">编辑</el-button>
+<!--                    <el-button @click="updateHoliday()" type="text" size="small">编辑</el-button>-->
                     <el-button @click="deleteById(scope.row.id)" type="text" size="small">删除</el-button>
                 </template>
             </el-table-column>
@@ -121,18 +127,22 @@
         name: 'FestivalList',
         data() {
             return ({
+                //分页
                 total: 0,
                 pages: 0,
                 records: [],
                 pageCurrent: 1,
                 pageSize: 10,
+                //添加&更新
                 festivalBroadcast: {
+                    id: null,
                     broadcastDay: "",
                     url: "",
                     timestamp: null,
                     md5: null,
                     size: null,
                 },
+                //文件上传
                 dialogFormVisible: false,
                 dialogVisible: false,
                 fileVO: {
@@ -148,6 +158,7 @@
         methods: {
             //增删改查功能
             getHolidayList(pageCurrent) {
+                // console.log("pageCurrent:" + this.pageCurrent + "--pageSize:" + this.pageSize)
                 this.pageCurrent = pageCurrent;
                 festival.getHolidayList(this.pageCurrent, this.pageSize)
                     .then(response => {
@@ -163,7 +174,24 @@
                 })
             },
             addHoliday() {
-                festival.addHoliday()
+                this.festivalBroadcast.md5 = this.fileVO.md5;
+                this.festivalBroadcast.size = this.fileVO.size;
+                this.festivalBroadcast.webUrl = this.fileVO.webUrl;
+                console.log("***festivalBroadcast.broadcastDay:" + this.festivalBroadcast.broadcastDay);
+                console.log("***festivalBroadcast.webUrl:" + this.festivalBroadcast.webUrl);
+                festival.addHoliday(this.festivalBroadcast).then(res => {
+                    this.getHolidayList(this.pageCurrent);
+                    console.log(res);
+                    this.$message({
+                        type: 'success',
+                        message: '添加成功!'
+                    })
+                    this.dialogFormVisible = false;
+                    this.dialogVisible = false;
+                    this.fileVO.webUrl = {webUrl: "", md5: "", size: null};
+                }).catch(error => {
+                    console.log(error)
+                })
             },
             updateHoliday() {
                 festival.updateHoliday()
@@ -176,9 +204,9 @@
                 })
                     .then(() => {
                         festival.deleteHoliday(id)
-                            .then(response => {
-                                this.getHolidayList(1);
-                                console.log(response);
+                            .then(res => {
+                                this.getHolidayList(this.pageCurrent);
+                                console.log(res);
                                 this.$message({
                                     type: 'success',
                                     message: '删除成功!'
@@ -202,13 +230,23 @@
             },
             //文件上传功能
             handleRemove(file, fileList) {
+                //文件列表移除文件时的钩子
                 console.log("handleRemove" + file, fileList);
-                this.fileVO.webUrl = {webUrl: "",md5: "",size: null};
+                this.fileVO.webUrl = {webUrl: "", md5: "", size: null};
             },
             handlePictureCardPreview(file) {
-                console.log("handlePictureCardPreview:" + file)
-                this.dialogImageUrl = fileVO.webUrl;
-                this.dialogVisible = true;
+                //点击文件列表中已上传的文件时的钩子
+                console.log("***handlePictureCardPreview:" + file);
+            },
+            handleSuccess(response, file, fileList) {
+                //文件上传成功时的钩子
+                let data = response.data;
+                this.fileVO.webUrl = data.webUrl;
+                console.log("****fileVO.webUrl:" + this.fileVO.webUrl);
+                this.fileVO.md5 = data.md5;
+                this.fileVO.size = data.size;
+
+                this.dialogVisible = false;
             }
         },
         computed: {}

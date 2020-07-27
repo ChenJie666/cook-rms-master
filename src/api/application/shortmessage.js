@@ -2,9 +2,9 @@ import request from '@/utils/request.js'
 
 export default {
 
-    getShortMessageList(){
+    getShortMessageList(pageCurrent,pageSize){
         return request({
-            url: '/application/message/alllist',
+            url: `/application/message/alllist/${pageCurrent}/${pageSize}`,
             method: 'get'
         })
     },
