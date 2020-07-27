@@ -57,14 +57,17 @@
     </div>
 </template>
 
-<style>
+<style scoped>
     .el-switch {
-        height: 50px;
+        margin-top: 30px;
+        margin-left: 200px;
     }
 
     .el-button {
         height: 50px;
         width: 120px;
+        margin-top: 30px;
+        margin-left: 200px;
     }
 
 </style>

@@ -2,9 +2,9 @@ import request from '@/utils/request.js'
 
 export default {
 
-    getVoiceList(){
+    getVoiceList(pageCurrent,pageSize){
         return request({
-            url: '/application/voice/list',
+            url: `/application/voice/list/${pageCurrent}/${pageSize}`,
             method: 'get'
         })
     },

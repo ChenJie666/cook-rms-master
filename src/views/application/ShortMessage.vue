@@ -116,37 +116,7 @@
 
 </template>
 
-<style>
-    <!--
-    详细信息的样式
-
-    -->
-    .demo-table-expand {
-        font-size: 0;
-    }
-
-    .demo-table-expand label {
-        width: 120px;
-        color: #99a9bf;
-    }
-
-    .demo-table-expand .el-form-item {
-        margin-right: 0;
-        margin-bottom: 0;
-        width: 100%;
-    }
-
-
-    /*.img {*/
-
-    /*.el-icon-circle-close {*/
-    /*    color: white;*/
-    /*}*/
-
-    /*}*/
-
-
-</style>
+<style scoped src="../../assets/css/application.css"/>
 
 <script>
     import shortmessage from '../../api/application/shortmessage'
