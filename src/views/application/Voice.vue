@@ -4,48 +4,53 @@
         <br>
         <!-- 添加记录 -->
         <el-button type="primary" @click="dialogFormVisible = true">添加语言包</el-button>
-        <el-dialog title="添加语言包" :visible.sync="dialogFormVisible">
-            <el-form :model="voiceFirmwareVO">
-                <span>MCU固件版本号:</span>
-                <el-input
-                        placeholder="MCU固件版本号"
-                        v-model="voiceFirmwareVO.mcuVersion"
-                        clearable>
-                </el-input>
-                <br>
-                <span>语言固件版本号 :</span>
-                <el-input
-                        placeholder="语言固件版本号"
-                        v-model="voiceFirmwareVO.voiceVersion"
-                        clearable>
-                </el-input>
-                <br>
-                总 分 包 数 :
-                <el-input-number
-                        v-model="voiceFirmwareVO.packageCount"
-                        :min="1"
-                        :max="10"
-                        label="分包数"/>
-                <br>
-                每 个 包 大 小 :
-                <el-input
-                        placeholder="每个包大小"
-                        v-model="voiceFirmwareVO.packageSize"
-                        clearable>
-                </el-input>
-                <br>
-                <el-upload
-                        action="/cloud/application/upload"
-                        list-type="picture-card"
-                        :on-preview="handlePictureCardPreview"
-                        :on-remove="handleRemove"
-                        :on-success="handleSuccess">
-                    <i class="el-icon-plus"/>
-                </el-upload>
-                <el-dialog :visible.sync="dialogVisible">
-                    <img width="100%" :src="fileVO.webUrl" alt="">
-                </el-dialog>
+        <el-dialog title="添加语言包" :visible.sync="dialogFormVisible" width="600px">
 
+            <el-form label-position="right" label-width="130px" :model="voiceFirmwareVO">
+                <el-form-item label="MCU固件版本号">
+                    <el-input
+                            placeholder="MCU固件版本号"
+                            v-model="voiceFirmwareVO.mcuVersion"
+                            clearable>
+                    </el-input>
+                </el-form-item>
+
+                <el-form-item label="语言固件版本号">
+                    <el-input
+                            placeholder="语言固件版本号"
+                            v-model="voiceFirmwareVO.voiceVersion"
+                            clearable>
+                    </el-input>
+                </el-form-item>
+
+                <el-form-item label="总 分 包 数">
+                    <el-input-number
+                            v-model="voiceFirmwareVO.packageCount"
+                            :min="1"
+                            :max="10"
+                            label="分包数"/>
+                </el-form-item>
+
+                <el-form-item label="每 个 包 大 小 ">
+                    <el-input
+                            placeholder="每个包大小"
+                            v-model="voiceFirmwareVO.packageSize"
+                            clearable>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="文件上传">
+                    <el-upload
+                            action="/cloud/application/upload"
+                            list-type="picture-card"
+                            :on-preview="handlePictureCardPreview"
+                            :on-remove="handleRemove"
+                            :on-success="handleSuccess">
+                        <i class="el-icon-plus"/>
+                    </el-upload>
+                    <el-dialog :visible.sync="dialogVisible">
+                        <img width="100%" :src="fileVO.webUrl" alt="">
+                    </el-dialog>
+                </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -62,7 +67,7 @@
                   style="width: 100%">
             <el-table-column type="expand">
                 <template slot-scope="props">
-                    <el-form label-position="left" inline class="demo-table-expand">
+                    <el-form label-position="right" label-width="150px" inline class="demo-table-expand">
                         <el-form-item label="id">
                             <span>{{props.row.id}}</span>
                         </el-form-item>
@@ -73,7 +78,7 @@
                             <span>{{props.row.voiceVersion}}</span>
                         </el-form-item>
                         <el-form-item label="链接地址">
-                            <span>{{props.row.url}}</span>
+                            <span><a href="url">{{props.row.url}}</a></span>
                         </el-form-item>
                         <el-form-item label="文件大小">
                             <span>{{props.row.size}}</span>
@@ -255,9 +260,9 @@
         },
         computed: {},
         watch: {
-            records(){
+            records() {
                 this.records.map(record => {
-                    if (record.url.length > 33) {
+                    if (record.url != null && record.url.length > 33) {
                         record.name = record.url.slice(record.url.lastIndexOf("/") + 34);
                     }
                 })

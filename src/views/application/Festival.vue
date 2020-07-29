@@ -5,8 +5,8 @@
         <!-- 添加记录 -->
         <el-button type="primary" @click="dialogFormVisible = true">添加节日播报记录</el-button>
         <el-dialog title="添加节日播报记录" :visible.sync="dialogFormVisible">
-            <el-form :model="festivalBroadcast">
-                <el-form-item label="播报日期" label-width="120px">
+            <el-form label-position="right" label-width="20px" :model="festivalBroadcast">
+                <el-form-item label="播报日期" label-width="100px">
                     <el-date-picker
                             v-model="festivalBroadcast.broadcastDay"
                             type="date"
@@ -16,23 +16,26 @@
                     </el-date-picker>
                 </el-form-item>
 
-                <el-upload
-                        action="/cloud/application/upload"
-                        list-type="picture-card"
-                        :on-preview="handlePictureCardPreview"
-                        :on-remove="handleRemove"
-                        :on-success="handleSuccess">
-                    <i class="el-icon-plus"/>
-                </el-upload>
-                <el-dialog :visible.sync="dialogVisible">
-                    <img width="100%" :src="fileVO.url" alt="">
-                </el-dialog>
+                <el-form-item label="播报日期" label-width="100px">
+                    <el-upload
+                            action="/cloud/application/upload"
+                            list-type="picture-card"
+                            :on-preview="handlePictureCardPreview"
+                            :on-remove="handleRemove"
+                            :on-success="handleSuccess">
+                        <i class="el-icon-plus"/>
+                    </el-upload>
+                    <el-dialog :visible.sync="dialogVisible">
+                        <img width="100%" :src="fileVO.url" alt="">
+                    </el-dialog>
+                </el-form-item>
+
 
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
                 <el-button type="primary" @click="addHoliday">确 定</el-button>
-<!--                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
+                <!--                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
             </div>
         </el-dialog>
 
@@ -44,7 +47,7 @@
                   style="width: 100%">
             <el-table-column type="expand">
                 <template slot-scope="props">
-                    <el-form label-position="left" inline class="demo-table-expand">
+                    <el-form label-position="right" label-width="100px" inline class="demo-table-expand">
                         <el-form-item label="id">
                             <span>{{props.row.id}}</span>
                         </el-form-item>
@@ -55,7 +58,7 @@
                             <span>{{props.row.name}}</span>
                         </el-form-item>
                         <el-form-item label="链接地址">
-                            <span>{{props.row.url}}</span>
+                            <span><a href="url">{{props.row.url}}</a></span>
                         </el-form-item>
                         <el-form-item label="文件大小">
                             <span>{{props.row.size}}</span>
@@ -78,7 +81,7 @@
             <el-table-column label="创建时间" prop="createTime"/>
             <el-table-column fixed="right" label="操作">
                 <template slot-scope="scope">
-<!--                    <el-button @click="updateHoliday()" type="text" size="small">编辑</el-button>-->
+                    <!--                    <el-button @click="updateHoliday()" type="text" size="small">编辑</el-button>-->
                     <el-button @click="deleteById(scope.row.id)" type="text" size="small">删除</el-button>
                 </template>
             </el-table-column>
@@ -87,7 +90,6 @@
         <br>
 
         <!-- 分页功能 -->
-        <span class="demonstration"></span>
         <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
@@ -233,9 +235,9 @@
         },
         computed: {},
         watch: {
-            records(){
+            records() {
                 this.records.map(record => {
-                    if (record.url.length > 33) {
+                    if (record.url != null && record.url.length > 33) {
                         record.name = record.url.slice(record.url.lastIndexOf("/") + 34);
                     }
                 })

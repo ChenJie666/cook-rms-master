@@ -7,32 +7,33 @@
         <el-dialog title="添加节日播报记录" :visible.sync="dialogFormVisible" width="600px">
             <el-form ref="form" :model="shortMessageVO">
 
-                <el-form-item label="开始结束时间" label-width="120px">
+                <el-form-item label="起止时间" label-width="100px">
                     <el-date-picker
                             v-model="datetimerange"
                             type="datetimerange"
                             range-separator="至"
-                            start-placeholder="开始日期"
-                            end-placeholder="结束日期"
+                            start-placeholder="开始时间"
+                            end-placeholder="结束时间"
                             align="left"
-                            :default-time="['00:00:00','00:00:00']">
+                            :default-time="['00:00:00','00:00:00']"
+                            value-format="timestamp">
                     </el-date-picker>
                 </el-form-item>
 
-                <el-form-item label="设备型号" prop="region">
+                <el-form-item label="设备型号" prop="region" label-width="100px">
                     <el-select v-model="shortMessageVO.deviceModel" placeholder="请选择设备型号">
                         <el-option label="Q6" value="Q6"/>
                     </el-select>
                 </el-form-item>
 
-                <el-form-item label="消息类型" prop="region">
+                <el-form-item label="消息类型" prop="region" label-width="100px">
                     <el-select v-model="shortMessageVO.type" placeholder="请选择消息类型">
                         <el-option label="文字" value="1"/>
                         <el-option label="图片" value="2"/>
                     </el-select>
                 </el-form-item>
 
-                <el-form-item v-if="shortMessageVO.type==1" label="文本消息内容" prop="desc">
+                <el-form-item v-if="shortMessageVO.type==1" label="文本消息内容" prop="desc" label-width="100px">
                     <el-input type="textarea" v-model="shortMessageVO.content"></el-input>
                 </el-form-item>
 
@@ -45,11 +46,10 @@
                             :on-success="handleSuccess">
                         <i class="el-icon-plus"/>
                     </el-upload>
+                    <el-dialog :visible.sync="dialogVisible">
+                        <img width="100%" :src="fileVO.url" alt="">
+                    </el-dialog>
                 </el-form-item>
-
-                <el-dialog :visible.sync="dialogVisible">
-                    <img width="100%" :src="fileVO.url" alt="">
-                </el-dialog>
 
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -67,7 +67,7 @@
                   style="width: 100%">
             <el-table-column type="expand">
                 <template slot-scope="props">
-                    <el-form label-position="left" inline class="demo-table-expand">
+                    <el-form label-position="right" label-width="150px" inline class="demo-table-expand">
                         <el-form-item label="id">
                             <span>{{props.row.id}}</span>
                         </el-form-item>
@@ -78,7 +78,7 @@
                             <span>{{props.row.content}}</span>
                         </el-form-item>
                         <el-form-item label="图片地址">
-                            <span>{{props.row.imageUrl}}</span>
+                            <span><a href="url">{{props.row.imageUrl}}</a></span>
                         </el-form-item>
                         <el-form-item label="开始时间时间戳">
                             <span>{{props.row.startTime}}</span>
@@ -96,16 +96,20 @@
                 </template>
             </el-table-column>
             <el-table-column fixed type="index"/>
-            <el-table-column label="消息类型" prop="type"/>
+            <el-table-column label="消息类型" prop="typeName"/>
             <el-table-column label="文本消息内容" prop="content"/>
             <el-table-column label="图片" prop="imageUrl">
                 <template slot-scope="scope">
                     <el-image
-                            style="width:100%; height: 100%"
+                            style="width:50%; height: 50%"
                             :src="scope.row.imageUrl"
-                            :preview-src-list=[scope.row.imageUrl]/*srcList(scope.row.index)*/
- fit="contain"
-                            lazy/>
+                            :preview-src-list=[scope.row.imageUrl]
+                            fit="contain"
+                            lazy>
+                        <div v-if="scope.row.imageUrl==''" slot="error" class="image-slot">
+                            <!--                                <i class="el-icon-picture-outline"/>-->
+                        </div>
+                    </el-image>
                 </template>
             </el-table-column>
             <el-table-column label="开始时间" prop="startDatetime"/>
@@ -200,22 +204,26 @@
                 })
             },
             addShortMessage() {
-                console.log(this.datetimerange)
-
-                this.festivalBroadcast.imageUrl = this.fileVO.url;
-                // shortmessage.addShortMessage(this.shortMessageVO).then(res => {
-                //     this.getShortMessageList(this.pageCurrent);
-                //     console.log(res);
-                //     this.$message({
-                //         type: 'success',
-                //         message: '添加成功!'
-                //     });
-                //     this.dialogFormVisible = false;
-                //     this.dialogVisible = false;
-                //     this.fileVO.url = {url: "", md5: "", size: null};
-                // }).catch(error => {
-                //     console.log(error)
-                // })
+                let endTimestamp = this.datetimerange.pop() / 1000;
+                let startTimestamp = this.datetimerange.pop() / 1000;
+                console.log(startTimestamp + "-" + endTimestamp);
+                this.shortMessageVO.imageUrl = this.fileVO.url;
+                this.shortMessageVO.startTime = startTimestamp;
+                this.shortMessageVO.endTime = endTimestamp;
+                console.log("***addShortMessage:" + this.shortMessageVO);
+                shortmessage.addShortMessage(this.shortMessageVO).then(res => {
+                    this.getShortMessageList(this.pageCurrent);
+                    console.log(res);
+                    this.$message({
+                        type: 'success',
+                        message: '添加成功!'
+                    });
+                    this.dialogFormVisible = false;
+                    this.dialogVisible = false;
+                    this.fileVO.url = {url: "", md5: "", size: null};
+                }).catch(error => {
+                    console.log(error)
+                });
             },
             //TODO
             updateHoliday() {
@@ -294,6 +302,9 @@
                     // record.endDatetime = timeutils.toDatetime(record.endTime);
                     record.startDatetime = moment(record.startTime * 1000).format('YYYY-MM-DD HH:mm:ss')
                     record.endDatetime = moment(record.endTime * 1000).format('YYYY-MM-DD HH:mm:ss')
+
+                    record.typeName = (record.type == 1 ? '文字':'图片')
+
                 })
             }
         }
