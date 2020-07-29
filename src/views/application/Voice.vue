@@ -6,21 +6,21 @@
         <el-button type="primary" @click="dialogFormVisible = true">添加语言包</el-button>
         <el-dialog title="添加语言包" :visible.sync="dialogFormVisible">
             <el-form :model="voiceFirmwareVO">
-                MCU固件版本号:
+                <span>MCU固件版本号:</span>
                 <el-input
                         placeholder="MCU固件版本号"
                         v-model="voiceFirmwareVO.mcuVersion"
                         clearable>
                 </el-input>
                 <br>
-                语言固件版本号 :
+                <span>语言固件版本号 :</span>
                 <el-input
                         placeholder="语言固件版本号"
                         v-model="voiceFirmwareVO.voiceVersion"
                         clearable>
                 </el-input>
                 <br>
-                总  分 包 数 :
+                总 分 包 数 :
                 <el-input-number
                         v-model="voiceFirmwareVO.packageCount"
                         :min="1"
@@ -40,7 +40,7 @@
                         :on-preview="handlePictureCardPreview"
                         :on-remove="handleRemove"
                         :on-success="handleSuccess">
-                    <i class="el-icon-plus"></i>
+                    <i class="el-icon-plus"/>
                 </el-upload>
                 <el-dialog :visible.sync="dialogVisible">
                     <img width="100%" :src="fileVO.webUrl" alt="">
@@ -49,7 +49,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addHoliday">确 定</el-button>
+                <el-button type="primary" @click="addVoiceFirmware">确 定</el-button>
                 <!--                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
             </div>
         </el-dialog>
@@ -95,11 +95,12 @@
             </el-table-column>
             <el-table-column fixed type="index"/>
             <el-table-column label="MCU固件版本号" prop="mcuVersion"/>
-            <el-table-column label="语言固件版本号" prop="voiceVersion"/>
+            <el-table-column label="语音固件版本号" prop="voiceVersion"/>
+            <el-table-column label="文件名" prop="name"/>
             <el-table-column label="创建时间" prop="createTime"/>
             <el-table-column fixed="right" label="操作">
                 <template slot-scope="scope">
-                    <!--                    <el-button @click="updateHoliday()" type="text" size="small">编辑</el-button>-->
+                    <el-button @click="updateHoliday()" type="text" size="small">编辑</el-button>
                     <el-button @click="deleteById(scope.row.id)" type="text" size="small">删除</el-button>
                 </template>
             </el-table-column>
@@ -178,22 +179,20 @@
                     console.log(error)
                 })
             },
-            addHoliday() {
-                this.festivalBroadcast.md5 = this.fileVO.md5;
-                this.festivalBroadcast.size = this.fileVO.size;
-                this.festivalBroadcast.webUrl = this.fileVO.webUrl;
-                console.log("***festivalBroadcast.broadcastDay:" + this.festivalBroadcast.broadcastDay);
-                console.log("***festivalBroadcast.webUrl:" + this.festivalBroadcast.webUrl);
-                festival.addHoliday(this.festivalBroadcast).then(res => {
-                    this.getHolidayList(this.pageCurrent);
+            addVoiceFirmware() {
+                this.voiceFirmwareVO.md5 = this.fileVO.md5;
+                this.voiceFirmwareVO.size = this.fileVO.size;
+                this.voiceFirmwareVO.url = this.fileVO.url;
+                voice.addVoice(this.voiceFirmwareVO).then(res => {
+                    this.getVoiceList(this.pageCurrent);
                     console.log(res);
                     this.$message({
                         type: 'success',
                         message: '添加成功!'
-                    })
+                    });
                     this.dialogFormVisible = false;
                     this.dialogVisible = false;
-                    this.fileVO.webUrl = {webUrl: "", md5: "", size: null};
+                    this.fileVO.url = {url: "", md5: "", size: null};
                 }).catch(error => {
                     console.log(error)
                 })
@@ -208,9 +207,9 @@
                     type: 'warning'
                 })
                     .then(() => {
-                        festival.deleteHoliday(id)
+                        voice.deleteVoice(id)
                             .then(res => {
-                                this.getHolidayList(this.pageCurrent);
+                                this.getVoiceList(this.pageCurrent);
                                 console.log(res);
                                 this.$message({
                                     type: 'success',
@@ -227,17 +226,17 @@
             //分页功能
             handleSizeChange(pageSize) {
                 this.pageSize = pageSize;
-                this.getHolidayList(this.pageCurrent)
+                this.getVoiceList(this.pageCurrent)
             },
             handleCurrentChange(pageCurrent) {
                 this.pageCurrent = pageCurrent;
-                this.getHolidayList(this.pageCurrent)
+                this.getVoiceList(this.pageCurrent)
             },
             //文件上传功能
             handleRemove(file, fileList) {
                 //文件列表移除文件时的钩子
                 console.log("handleRemove" + file, fileList);
-                this.fileVO.webUrl = {webUrl: "", md5: "", size: null};
+                this.fileVO.url = {url: "", md5: "", size: null};
             },
             handlePictureCardPreview(file) {
                 //点击文件列表中已上传的文件时的钩子
@@ -246,14 +245,23 @@
             handleSuccess(response, file, fileList) {
                 //文件上传成功时的钩子
                 let data = response.data;
-                this.fileVO.webUrl = data.webUrl;
-                console.log("****fileVO.webUrl:" + this.fileVO.webUrl);
+                this.fileVO.url = data.url;
+                console.log("****fileVO.url:" + this.fileVO.url);
                 this.fileVO.md5 = data.md5;
                 this.fileVO.size = data.size;
 
                 this.dialogVisible = false;
             }
         },
-        computed: {}
+        computed: {},
+        watch: {
+            records(){
+                this.records.map(record => {
+                    if (record.url.length > 33) {
+                        record.name = record.url.slice(record.url.lastIndexOf("/") + 34);
+                    }
+                })
+            }
+        }
     }
 </script>

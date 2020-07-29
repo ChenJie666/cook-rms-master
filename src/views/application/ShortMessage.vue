@@ -4,36 +4,57 @@
         <br>
         <!-- 添加记录 -->
         <el-button type="primary" @click="dialogFormVisible = true">添加短消息记录</el-button>
-        <el-dialog title="添加节日播报记录" :visible.sync="dialogFormVisible">
-            <el-form :model="festivalBroadcast">
-                <el-form-item label="播报日期" label-width="120px">
-                    <!--                    <el-input v-model="festivalBroadcast.broadcastDay" autocomplete="off"></el-input>-->
-                    <span class="demonstration"></span>
+        <el-dialog title="添加节日播报记录" :visible.sync="dialogFormVisible" width="600px">
+            <el-form ref="form" :model="shortMessageVO">
+
+                <el-form-item label="开始结束时间" label-width="120px">
                     <el-date-picker
-                            v-model="festivalBroadcast.broadcastDay"
-                            type="date"
-                            placeholder="选择日期"
-                            format="yyyy-MM-dd"
-                            value-format="yyyy-MM-dd">
+                            v-model="datetimerange"
+                            type="datetimerange"
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期"
+                            align="left"
+                            :default-time="['00:00:00','00:00:00']">
                     </el-date-picker>
                 </el-form-item>
 
-                <el-upload
-                        action="/cloud/application/upload"
-                        list-type="picture-card"
-                        :on-preview="handlePictureCardPreview"
-                        :on-remove="handleRemove"
-                        :on-success="handleSuccess">
-                    <i class="el-icon-plus"></i>
-                </el-upload>
+                <el-form-item label="设备型号" prop="region">
+                    <el-select v-model="shortMessageVO.deviceModel" placeholder="请选择设备型号">
+                        <el-option label="Q6" value="Q6"/>
+                    </el-select>
+                </el-form-item>
+
+                <el-form-item label="消息类型" prop="region">
+                    <el-select v-model="shortMessageVO.type" placeholder="请选择消息类型">
+                        <el-option label="文字" value="1"/>
+                        <el-option label="图片" value="2"/>
+                    </el-select>
+                </el-form-item>
+
+                <el-form-item v-if="shortMessageVO.type==1" label="文本消息内容" prop="desc">
+                    <el-input type="textarea" v-model="shortMessageVO.content"></el-input>
+                </el-form-item>
+
+                <el-form-item v-if="shortMessageVO.type==2" label="上传图片">
+                    <el-upload
+                            action="/cloud/application/upload"
+                            list-type="picture-card"
+                            :on-preview="handlePictureCardPreview"
+                            :on-remove="handleRemove"
+                            :on-success="handleSuccess">
+                        <i class="el-icon-plus"/>
+                    </el-upload>
+                </el-form-item>
+
                 <el-dialog :visible.sync="dialogVisible">
-                    <img width="100%" :src="fileVO.webUrl" alt="">
+                    <img width="100%" :src="fileVO.url" alt="">
                 </el-dialog>
 
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addHoliday">确 定</el-button>
+                <el-button type="primary" @click="addShortMessage">确 定</el-button>
                 <!--                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
             </div>
         </el-dialog>
@@ -82,13 +103,13 @@
                     <el-image
                             style="width:100%; height: 100%"
                             :src="scope.row.imageUrl"
-                            :preview-src-list=/*[scope.row.imageUrl]*/srcList(scope.row.index)
-                            fit="contain"
+                            :preview-src-list=[scope.row.imageUrl]/*srcList(scope.row.index)*/
+ fit="contain"
                             lazy/>
                 </template>
             </el-table-column>
-            <el-table-column label="开始时间" prop="startTime"/>
-            <el-table-column label="结束时间" prop="endTime"/>
+            <el-table-column label="开始时间" prop="startDatetime"/>
+            <el-table-column label="结束时间" prop="endDatetime"/>
             <el-table-column label="设备型号" prop="deviceModel"/>
             <el-table-column label="创建时间" prop="createTime"/>
             <el-table-column fixed="right" label="操作">
@@ -120,6 +141,8 @@
 
 <script>
     import shortmessage from '../../api/application/shortmessage'
+    import timeutils from '../../utils/time'
+    import moment from 'moment'
 
     export default {
         name: 'FestivalList',
@@ -134,7 +157,7 @@
                 pageCurrent: 1,
                 pageSize: 10,
                 //添加&更新
-                festivalBroadcast: {
+                shortMessageVO: {
                     id: null,
                     type: null,
                     content: "",
@@ -147,10 +170,12 @@
                 dialogFormVisible: false,
                 dialogVisible: false,
                 fileVO: {
-                    webUrl: "",
+                    url: "",
                     md5: "",
                     size: null
                 },
+                //时间范围
+                datetimerange: []
             })
         },
         created() {
@@ -174,26 +199,25 @@
                     console.log(error)
                 })
             },
-            addHoliday() {
-                this.festivalBroadcast.md5 = this.fileVO.md5;
-                this.festivalBroadcast.size = this.fileVO.size;
-                this.festivalBroadcast.webUrl = this.fileVO.webUrl;
-                console.log("***festivalBroadcast.broadcastDay:" + this.festivalBroadcast.broadcastDay);
-                console.log("***festivalBroadcast.webUrl:" + this.festivalBroadcast.webUrl);
-                festival.addHoliday(this.festivalBroadcast).then(res => {
-                    this.getHolidayList(this.pageCurrent);
-                    console.log(res);
-                    this.$message({
-                        type: 'success',
-                        message: '添加成功!'
-                    })
-                    this.dialogFormVisible = false;
-                    this.dialogVisible = false;
-                    this.fileVO.webUrl = {webUrl: "", md5: "", size: null};
-                }).catch(error => {
-                    console.log(error)
-                })
+            addShortMessage() {
+                console.log(this.datetimerange)
+
+                this.festivalBroadcast.imageUrl = this.fileVO.url;
+                // shortmessage.addShortMessage(this.shortMessageVO).then(res => {
+                //     this.getShortMessageList(this.pageCurrent);
+                //     console.log(res);
+                //     this.$message({
+                //         type: 'success',
+                //         message: '添加成功!'
+                //     });
+                //     this.dialogFormVisible = false;
+                //     this.dialogVisible = false;
+                //     this.fileVO.url = {url: "", md5: "", size: null};
+                // }).catch(error => {
+                //     console.log(error)
+                // })
             },
+            //TODO
             updateHoliday() {
                 shortmessage.updateShortMessage()
             },
@@ -204,9 +228,9 @@
                     type: 'warning'
                 })
                     .then(() => {
-                        festival.deleteHoliday(id)
+                        shortmessage.deleteShortMessage(id)
                             .then(res => {
-                                this.getHolidayList(this.pageCurrent);
+                                this.getShortMessageList(this.pageCurrent);
                                 console.log(res);
                                 this.$message({
                                     type: 'success',
@@ -223,17 +247,17 @@
             //分页功能
             handleSizeChange(pageSize) {
                 this.pageSize = pageSize;
-                this.getHolidayList(this.pageCurrent)
+                this.getShortMessageList(this.pageCurrent)
             },
             handleCurrentChange(pageCurrent) {
                 this.pageCurrent = pageCurrent;
-                this.getHolidayList(this.pageCurrent)
+                this.getShortMessageList(this.pageCurrent)
             },
             //文件上传功能
             handleRemove(file, fileList) {
                 //文件列表移除文件时的钩子
                 console.log("handleRemove" + file, fileList);
-                this.fileVO.webUrl = {webUrl: "", md5: "", size: null};
+                this.fileVO.url = {url: "", md5: "", size: null};
             },
             handlePictureCardPreview(file) {
                 //点击文件列表中已上传的文件时的钩子
@@ -242,26 +266,37 @@
             handleSuccess(response, file, fileList) {
                 //文件上传成功时的钩子
                 let data = response.data;
-                this.fileVO.webUrl = data.webUrl;
-                console.log("****fileVO.webUrl:" + this.fileVO.webUrl);
+                this.fileVO.url = data.url;
+                console.log("****fileVO.url:" + this.fileVO.url);
                 this.fileVO.md5 = data.md5;
                 this.fileVO.size = data.size;
 
                 this.dialogVisible = false;
             },
             //大图预览
-            srcList(index){
+            srcList(index) {
                 let images = this.records.map(item => item.imageUrl);
-                var imagePre = images.slice(0,index);
-                var imageSuf = images.slice(index);
+                let imagePre = images.slice(0, index);
+                let imageSuf = images.slice(index);
                 return imageSuf.push(imagePre);
-            }
+            },
         },
         computed: {
             //通过该计算属性得到当前页所有图片地址集合，用于遍历
-            srcList() {
-                return this.records.map(item => item.imageUrl);
+            // srcList() {
+            //     return this.records.map(item => item.imageUrl);
+            // }
+        },
+        watch: {
+            records() {
+                this.records.map(record => {
+                    // record.startDatetime = timeutils.toDatetime(record.startTime);
+                    // record.endDatetime = timeutils.toDatetime(record.endTime);
+                    record.startDatetime = moment(record.startTime * 1000).format('YYYY-MM-DD HH:mm:ss')
+                    record.endDatetime = moment(record.endTime * 1000).format('YYYY-MM-DD HH:mm:ss')
+                })
             }
         }
+
     }
 </script>

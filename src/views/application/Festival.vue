@@ -7,8 +7,6 @@
         <el-dialog title="添加节日播报记录" :visible.sync="dialogFormVisible">
             <el-form :model="festivalBroadcast">
                 <el-form-item label="播报日期" label-width="120px">
-                    <!--                    <el-input v-model="festivalBroadcast.broadcastDay" autocomplete="off"></el-input>-->
-                    <span class="demonstration"></span>
                     <el-date-picker
                             v-model="festivalBroadcast.broadcastDay"
                             type="date"
@@ -24,10 +22,10 @@
                         :on-preview="handlePictureCardPreview"
                         :on-remove="handleRemove"
                         :on-success="handleSuccess">
-                    <i class="el-icon-plus"></i>
+                    <i class="el-icon-plus"/>
                 </el-upload>
                 <el-dialog :visible.sync="dialogVisible">
-                    <img width="100%" :src="fileVO.webUrl" alt="">
+                    <img width="100%" :src="fileVO.url" alt="">
                 </el-dialog>
 
             </el-form>
@@ -131,7 +129,7 @@
                 dialogFormVisible: false,
                 dialogVisible: false,
                 fileVO: {
-                    webUrl: "",
+                    url: "",
                     md5: "",
                     size: null
                 }
@@ -161,9 +159,8 @@
             addHoliday() {
                 this.festivalBroadcast.md5 = this.fileVO.md5;
                 this.festivalBroadcast.size = this.fileVO.size;
-                this.festivalBroadcast.webUrl = this.fileVO.webUrl;
-                console.log("***festivalBroadcast.broadcastDay:" + this.festivalBroadcast.broadcastDay);
-                console.log("***festivalBroadcast.webUrl:" + this.festivalBroadcast.webUrl);
+                this.festivalBroadcast.url = this.fileVO.url;
+                console.log(this.festivalBroadcast)
                 festival.addHoliday(this.festivalBroadcast).then(res => {
                     this.getHolidayList(this.pageCurrent);
                     console.log(res);
@@ -173,7 +170,7 @@
                     })
                     this.dialogFormVisible = false;
                     this.dialogVisible = false;
-                    this.fileVO.webUrl = {webUrl: "", md5: "", size: null};
+                    this.fileVO.url = {url: "", md5: "", size: null};
                 }).catch(error => {
                     console.log(error)
                 })
@@ -217,7 +214,7 @@
             handleRemove(file, fileList) {
                 //文件列表移除文件时的钩子
                 console.log("handleRemove" + file, fileList);
-                this.fileVO.webUrl = {webUrl: "", md5: "", size: null};
+                this.fileVO.url = {url: "", md5: "", size: null};
             },
             handlePictureCardPreview(file) {
                 //点击文件列表中已上传的文件时的钩子
@@ -226,14 +223,23 @@
             handleSuccess(response, file, fileList) {
                 //文件上传成功时的钩子
                 let data = response.data;
-                this.fileVO.webUrl = data.webUrl;
-                console.log("****fileVO.webUrl:" + this.fileVO.webUrl);
+                this.fileVO.url = data.url;
+                console.log("****fileVO.url:" + this.fileVO.url);
                 this.fileVO.md5 = data.md5;
                 this.fileVO.size = data.size;
 
                 this.dialogVisible = false;
             }
         },
-        computed: {}
+        computed: {},
+        watch: {
+            records(){
+                this.records.map(record => {
+                    if (record.url.length > 33) {
+                        record.name = record.url.slice(record.url.lastIndexOf("/") + 34);
+                    }
+                })
+            }
+        }
     }
 </script>

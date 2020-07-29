@@ -19,9 +19,9 @@
 }
 
 
-.el-icon-circle-close {
-    color: white;
-}
+/*.el-icon-circle-close {*/
+/*    color: red;*/
+/*}*/
 
 .el-input {
     width: 50%;
@@ -30,7 +30,7 @@
 }
 
 .el-input-number {
-    width: 20%;
+    width: 30%;
     margin-bottom: 20px;
     margin-left: 20px;
 }

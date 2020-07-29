@@ -28,7 +28,7 @@ export default {
     deleteVoice(id){
         return request({
             url: `/application/voice/delete/${id}`,
-            data: 'delete'
+            method: 'delete'
         })
     }
 
