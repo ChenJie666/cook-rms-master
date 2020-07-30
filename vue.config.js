@@ -25,8 +25,8 @@ module.exports = {
         open: false,
         proxy: {
             "/cloud": {
-                // target: "http://localhost:10010/",
-                target: "http://api.wecook.iotmars.com:10010",
+                target: "http://localhost:10010/",
+                // target: "http://api.wecook.iotmars.com:10010",
                 changeOrigin: true,
                 pathRewrite: {
                     '^/cloud': ''

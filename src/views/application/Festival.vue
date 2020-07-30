@@ -16,7 +16,7 @@
                     </el-date-picker>
                 </el-form-item>
 
-                <el-form-item label="播报日期" label-width="100px">
+                <el-form-item label="文件上传" label-width="100px">
                     <el-upload
                             action="/cloud/application/upload"
                             list-type="picture-card"
