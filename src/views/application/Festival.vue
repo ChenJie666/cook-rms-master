@@ -44,7 +44,7 @@
 
         <!-- 展示记录 -->
         <el-table :data="records"
-                  style="width: 100%">
+                  style="width: 100%" border>
             <el-table-column type="expand">
                 <template slot-scope="props">
                     <el-form label-position="right" label-width="100px" inline class="demo-table-expand">
@@ -58,7 +58,7 @@
                             <span>{{props.row.name}}</span>
                         </el-form-item>
                         <el-form-item label="链接地址">
-                            <span><a href="url">{{props.row.url}}</a></span>
+                            <el-link target="_blank" type="primary" :href="props.row.url">{{props.row.url}}</el-link>
                         </el-form-item>
                         <el-form-item label="文件大小">
                             <span>{{props.row.size}}</span>
@@ -75,13 +75,13 @@
                     </el-form>
                 </template>
             </el-table-column>
-            <el-table-column fixed type="index"/>
+            <el-table-column label="序号" fixed prop="index"/>
             <el-table-column label="播报日期" prop="broadcastDay"/>
             <el-table-column label="文件名" prop="name"/>
             <el-table-column label="创建时间" prop="createTime"/>
             <el-table-column fixed="right" label="操作">
                 <template slot-scope="scope">
-                    <!--                    <el-button @click="updateHoliday()" type="text" size="small">编辑</el-button>-->
+                    <el-button @click="updateHoliday()" type="text" size="small">编辑</el-button>
                     <el-button @click="deleteById(scope.row.id)" type="text" size="small">删除</el-button>
                 </template>
             </el-table-column>
@@ -235,8 +235,12 @@
         },
         computed: {},
         watch: {
+            //添加需要展示的属性
             records() {
+                let p = 0;
                 this.records.map(record => {
+                    record.index = (this.pageCurrent - 1) * this.pageSize + ++p;
+
                     if (record.url != null && record.url.length > 33) {
                         record.name = record.url.slice(record.url.lastIndexOf("/") + 34);
                     }
