@@ -4,7 +4,7 @@
         <br>
         <!-- 添加记录 -->
         <el-button type="primary" @click="dialogFormVisible = true">添加语言包</el-button>
-        <el-dialog title="添加语言包" :visible.sync="dialogFormVisible" width="600px">
+        <el-dialog title="getTitle" :visible.sync="dialogFormVisible" @close="resetObj" width="600px">
 
             <el-form label-position="right" label-width="130px" :model="voiceFirmwareVO">
                 <el-form-item label="MCU固件版本号">
@@ -40,27 +40,59 @@
                 </el-form-item>
                 <el-form-item label="文件上传">
                     <el-upload
-                               action="/cloud/application/upload"
-                               list-type="picture-card"
-                               :on-preview="handlePictureCardPreview"
-                               :on-remove="handleRemove"
-                               :on-success="handleSuccess">
+                            action="/cloud/application/upload"
+                            list-type="picture-card"
+                            :on-preview="handlePictureCardPreview"
+                            :on-remove="handleRemove"
+                            :on-success="handleSuccess">
                         <i class="el-icon-plus"/>
                     </el-upload>
                     <el-dialog :visible.sync="dialogVisible">
-                        <img width="100%" :src="fileVO.webUrl" alt="">
+                        <img width="100%" :src="fileVO.url" alt="">
                     </el-dialog>
                 </el-form-item>
+
+                <el-form-item label="文件名称" v-if="fileVO.url !== ''" label-width="100px">
+                    <el-input
+                            type="textarea"
+                            v-model="getNameByUrl"
+                            :disabled="true">
+                    </el-input>
+                </el-form-item>
+
+                <el-form-item label="文件地址" v-if="fileVO.url !== ''" label-width="100px">
+                    <el-input
+                            type="textarea"
+                            v-model="fileVO.url"
+                            :disabled="true">
+                    </el-input>
+                </el-form-item>
+
+                <el-form-item label="文件md5值" v-if="fileVO.md5 !== ''" label-width="100px">
+                    <el-input
+                            type="textarea"
+                            v-model="fileVO.md5"
+                            :disabled="true">
+                    </el-input>
+                </el-form-item>
+
+                <el-form-item label="文件大小" v-if="fileVO.size !== null" label-width="100px">
+                    <el-input
+                            type="textarea"
+                            v-model="fileVO.size"
+                            :disabled="true">
+                    </el-input>
+                </el-form-item>
             </el-form>
+
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addVoiceFirmware">确 定</el-button>
+                <el-button @click="cancelOperation">取 消</el-button>
+                <el-button type="primary" @click="addOrUpdate">确 定</el-button>
                 <!--                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
             </div>
         </el-dialog>
 
-        <br>
-        <br>
+        <div style="margin: 20px;"></div>
 
         <!-- 展示记录 -->
         <el-table :data="records"
@@ -105,7 +137,7 @@
             <el-table-column label="创建时间" prop="createTime"/>
             <el-table-column fixed="right" label="操作">
                 <template slot-scope="scope">
-                    <el-button @click="updateVoice()" type="text" size="small">编辑</el-button>
+                    <el-button @click="setObj(scope.row.id)" type="text" size="small">编辑</el-button>
                     <el-button @click="deleteById(scope.row.id)" type="text" size="small">删除</el-button>
                 </template>
             </el-table-column>
@@ -157,7 +189,7 @@
                 dialogFormVisible: false,
                 dialogVisible: false,
                 fileVO: {
-                    webUrl: "",
+                    url: "",
                     md5: "",
                     size: null
                 }
@@ -184,6 +216,49 @@
                     console.log(error)
                 })
             },
+            addOrUpdate() {
+                if (this.voiceFirmwareVO.id == null) {
+                    this.addVoiceFirmware()
+                } else {
+                    this.updateVoiceFirmware()
+                }
+            },
+            setObj(id) {
+                let list = this.records.filter(record => {
+                    return record.id === id
+                });
+                let data = list.pop();
+                this.voiceFirmwareVO.id = data.id;
+                this.voiceFirmwareVO.mcuVersion = data.mcuVersion;
+                this.voiceFirmwareVO.voiceVersion = data.voiceVersion;
+                this.voiceFirmwareVO.url = data.url;
+                this.fileVO.url = data.url;
+                this.voiceFirmwareVO.md5 = data.md5;
+                this.fileVO.md5 = data.md5;
+                this.voiceFirmwareVO.size = data.size;
+                this.fileVO.size = data.size;
+                this.voiceFirmwareVO.packageCount = data.packageCount;
+                this.voiceFirmwareVO.packageSize = data.packageSize;
+
+                this.dialogFormVisible = true;
+            },
+            resetObj() {
+                this.voiceFirmwareVO = {
+                    id: null,
+                    mcuVersion: "",
+                    voiceVersion: "",
+                    url: "",
+                    size: null,
+                    md5: "",
+                    packageCount: null,
+                    packageSize: null
+                };
+                this.fileVO = {url: "", md5: "", size: null}
+            },
+            cancelOperation() {
+                this.dialogFormVisible = false;
+                this.resetObj();
+            },
             addVoiceFirmware() {
                 this.voiceFirmwareVO.md5 = this.fileVO.md5;
                 this.voiceFirmwareVO.size = this.fileVO.size;
@@ -197,13 +272,28 @@
                     });
                     this.dialogFormVisible = false;
                     this.dialogVisible = false;
-                    this.fileVO.url = {url: "", md5: "", size: null};
+                    this.resetObj();
                 }).catch(error => {
                     console.log(error)
                 })
             },
-            updateVoice() {
-                voice.updateVoice()
+            updateVoiceFirmware() {
+                this.voiceFirmwareVO.url = this.fileVO.url;
+                this.voiceFirmwareVO.md5 = this.fileVO.md5;
+                this.voiceFirmwareVO.size = this.fileVO.size;
+                voice.updateVoice(this.voiceFirmwareVO)
+                    .then(response => {
+                        this.getVoiceList(this.pageCurrent);
+                        this.$message({
+                            type: 'success',
+                            message: '更新成功!'
+                        })
+                        this.dialogFormVisible = false;
+                        this.dialogVisible = false;
+                        this.resetObj();
+                    }).catch(error => {
+                    console.log(error)
+                })
             },
             deleteById(id) {
                 this.$confirm('确认删除该记录？', '提示', {
@@ -255,10 +345,25 @@
                 this.fileVO.md5 = data.md5;
                 this.fileVO.size = data.size;
 
-                this.dialogVisible = false;
+                this.dialogVisible = true;
             }
         },
-        computed: {},
+        computed: {
+            getTitle(){
+                if (this.shortMessageVO.id == null) {
+                    return "添加语音记录"
+                } else {
+                    return "修改语音记录"
+                }
+            },
+            getNameByUrl() {
+                if (this.fileVO.url !== "") {
+                    return this.fileVO.url.slice(this.fileVO.url.lastIndexOf("/") + 34);
+                } else {
+                    console.log("getNameByUrl中的URL为空")
+                }
+            }
+        },
         watch: {
             //添加需要展示的属性
             records() {

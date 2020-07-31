@@ -4,7 +4,7 @@
         <br>
         <!-- 添加记录 -->
         <el-button type="primary" @click="dialogFormVisible = true">添加短消息记录</el-button>
-        <el-dialog title="添加节日播报记录" :visible.sync="dialogFormVisible" @close="resetObj" width="600px">
+        <el-dialog :title="getTitle" :visible.sync="dialogFormVisible" @close="resetObj" width="600px">
             <el-form ref="form" :model="shortMessageVO">
 
                 <el-form-item label="起止时间" label-width="100px">
@@ -72,8 +72,7 @@
             </div>
         </el-dialog>
 
-        <br>
-        <br>
+        <div style="margin: 20px;"></div>
 
         <!-- 展示记录 -->
         <el-table :data="records"
@@ -243,6 +242,7 @@
                 this.shortMessageVO.endTime = data.endTime;
                 this.shortMessageVO.deviceModel = data.deviceModel;
                 this.datetimerange = [data.startTime * 1000, data.endTime * 1000];
+
                 this.dialogFormVisible = true;
             },
             resetObj() {
@@ -384,8 +384,19 @@
             // srcList() {
             //     return this.records.map(item => item.imageUrl);
             // }
+            getTitle(){
+                if (this.shortMessageVO.id == null) {
+                    return "添加短消息记录"
+                } else {
+                    return "修改短消息记录"
+                }
+            },
             getNameByUrl() {
-                return this.fileVO.url.slice(this.fileVO.url.lastIndexOf("/") + 34);
+                if (this.fileVO.url !== "") {
+                    return this.fileVO.url.slice(this.fileVO.url.lastIndexOf("/") + 34);
+                } else {
+                    console.log("getNameByUrl中的URL为空")
+                }
             }
         },
         watch: {

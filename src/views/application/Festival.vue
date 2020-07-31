@@ -4,7 +4,7 @@
         <br>
         <!-- 添加记录 -->
         <el-button type="primary" @click="dialogFormVisible = true">添加节日播报记录</el-button>
-        <el-dialog title="添加节日播报记录" :visible.sync="dialogFormVisible" @close="resetObj">
+        <el-dialog title="getTitle" :visible.sync="dialogFormVisible" @close="resetObj">
             <el-form label-position="right" label-width="20px" :model="festivalBroadcast">
                 <el-form-item label="播报日期" label-width="100px">
                     <el-date-picker style="width: 128px"
@@ -70,8 +70,7 @@
             </div>
         </el-dialog>
 
-        <br>
-        <br>
+        <div style="margin: 20px;"></div>
 
         <!-- 展示记录 -->
         <el-table :data="records"
@@ -317,6 +316,13 @@
         }
         ,
         computed: {
+            getTitle(){
+                if (this.shortMessageVO.id == null) {
+                    return "添加节日播报"
+                } else {
+                    return "修改节日播报"
+                }
+            },
             getNameByUrl() {
                 if (this.fileVO.url !== "") {
                     return this.fileVO.url.slice(this.fileVO.url.lastIndexOf("/") + 34);

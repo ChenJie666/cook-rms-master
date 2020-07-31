@@ -15,6 +15,20 @@ export default {
             method: "get"
         })
     },
+    addDiyClock(clockVO){
+      return request({
+          url: "/application/time/add",
+          method: "post",
+          data: clockVO
+      })
+    },
+    updateClock(clockVO){
+        return request({
+            url: "/application/time/update",
+            method: "post",
+            data: clockVO
+        })
+    },
     deleteClock(id){
         return request({
             url: `/application/time/delete/${id}`,

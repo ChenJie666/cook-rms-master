@@ -15,6 +15,13 @@ export default {
           method: "get"
       })
     },
+    updateWeather(weather){
+        return request({
+            url: "/application/weather/updateWeather",
+            method: "post",
+            data: weather
+        })
+    },
     deleteWeather(id){
         return request({
             url: `/application/weather/deleteWeather/${id}`,
