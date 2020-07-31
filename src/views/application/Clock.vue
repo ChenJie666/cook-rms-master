@@ -1,6 +1,7 @@
 <template>
     <div class="">
 
+        <br>
         <el-button type="primary" @click="addClock">添加当天时钟</el-button>
 
         <div style="margin: 20px;"></div>
@@ -89,14 +90,22 @@
                 })
             },
             deleteById(id) {
-                clock.deleteClock(id)
-                    .then(response => {
-                        this.getClock(this.pageCurrent);
-                        this.$message({
-                            type: "success",
-                            message: "删除当前日期成功!"
-                        })
-                    }).catch(error => {
+                this.$confirm('确认删除该记录？', '提示', {
+                    confirmButtonClass: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    clock.deleteClock(id)
+                        .then(response => {
+                            this.getClock(this.pageCurrent);
+                            this.$message({
+                                type: "success",
+                                message: "删除当前日期成功!"
+                            })
+                        }).catch(error => {
+                        console.log(error)
+                    })
+                }).catch(error => {
                     console.log(error)
                 })
             },

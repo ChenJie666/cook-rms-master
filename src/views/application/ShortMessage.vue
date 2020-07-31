@@ -4,7 +4,7 @@
         <br>
         <!-- 添加记录 -->
         <el-button type="primary" @click="dialogFormVisible = true">添加短消息记录</el-button>
-        <el-dialog title="添加节日播报记录" :visible.sync="dialogFormVisible" width="600px">
+        <el-dialog title="添加节日播报记录" :visible.sync="dialogFormVisible" @close="resetObj" width="600px">
             <el-form ref="form" :model="shortMessageVO">
 
                 <el-form-item label="起止时间" label-width="100px">
@@ -34,10 +34,10 @@
                 </el-form-item>
 
                 <el-form-item v-if="shortMessageVO.type==1" label="文本消息内容" prop="desc" label-width="100px">
-                    <el-input type="textarea" v-model="shortMessageVO.content"></el-input>
+                    <el-input type="textarea" v-model="shortMessageVO.content" placeholder="请输入文本消息内容"></el-input>
                 </el-form-item>
 
-                <el-form-item v-if="shortMessageVO.type==2" label="上传图片">
+                <el-form-item v-if="shortMessageVO.type==2" label="上传图片" label-width="100px">
                     <el-upload
                             action="/cloud/application/upload"
                             list-type="picture-card"
@@ -51,9 +51,23 @@
                     </el-dialog>
                 </el-form-item>
 
+                <el-form-item v-if="fileVO.url !== '' && shortMessageVO.type==2" label="图片名称" label-width="100px">
+                    <el-input type="textarea"
+                              v-model="getNameByUrl"
+                              :disabled="true">
+                    </el-input>
+                </el-form-item>
+
+                <el-form-item v-if="fileVO.url !== '' && shortMessageVO.type==2" label="图片地址" label-width="100px">
+                    <el-input type="textarea"
+                              v-model="fileVO.url"
+                              :disabled="true">
+                    </el-input>
+                </el-form-item>
+
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button @click="cancelOperation">取 消</el-button>
                 <el-button type="primary" @click="addOrUpdate()">确 定</el-button>
             </div>
         </el-dialog>
@@ -95,9 +109,9 @@
                     </el-form>
                 </template>
             </el-table-column>
-            <el-table-column fixed prop="index"/>
+            <el-table-column label="序号" fixed prop="index" width="70px"/>
             <el-table-column label="消息类型" prop="typeName" width="100px"/>
-            <el-table-column label="图片" prop="exp" width="150px">
+            <el-table-column label="内容" prop="exp" width="150px">
                 <template slot-scope="scope">
                     <span>{{scope.row.content}}</span>
                     <el-image
@@ -118,7 +132,7 @@
             <el-table-column label="创建时间" prop="createTime"/>
             <el-table-column fixed="right" label="操作">
                 <template slot-scope="scope">
-                    <el-button @click="dialogFormVisible=true" type="text" size="small">编辑</el-button>
+                    <el-button @click="setObj(scope.row.id)" type="text" size="small">编辑</el-button>
                     <el-button @click="deleteById(scope.row.id)" type="text" size="small">删除</el-button>
                 </template>
             </el-table-column>
@@ -201,41 +215,109 @@
                     console.log(error)
                 })
             },
-            addOrUpdate(id){
-                if (id === null) {
-                    this.addShortMessage();
+            //点击确定后判断是添加还是修改
+            addOrUpdate() {
+                if (this.shortMessageVO.id == null) {
+                    this.addShortMessage()
                 } else {
-                    this.
-                    this.updateShortMessage(id);
+                    this.updateShortMessage()
                 }
+            },
+            //点击取消后将对象置空
+            cancelOperation() {
+                this.dialogFormVisible = false;
+                this.resetObj();
+            },
+            setObj(id) {
+                console.log(id);
+                let list = this.records.filter(record => {
+                    return record.id === id
+                });
+                let data = list.pop();
+                this.shortMessageVO.id = data.id;
+                this.shortMessageVO.type = data.type;
+                this.shortMessageVO.content = data.content;
+                this.shortMessageVO.imageUrl = data.imageUrl;
+                this.fileVO.url = data.imageUrl;
+                this.shortMessageVO.startTime = data.startTime;
+                this.shortMessageVO.endTime = data.endTime;
+                this.shortMessageVO.deviceModel = data.deviceModel;
+                this.datetimerange = [data.startTime * 1000, data.endTime * 1000];
+                this.dialogFormVisible = true;
+            },
+            resetObj() {
+                this.shortMessageVO = {
+                    id: null,
+                    type: null,
+                    content: "",
+                    imageUrl: "",
+                    startTime: null,
+                    endTime: null,
+                    deviceModel: null
+                };
+                this.fileVO = {url: "", md5: "", size: null};
+                this.datetimerange = []
             },
             addShortMessage() {
                 let endTimestamp = this.datetimerange.pop() / 1000;
                 let startTimestamp = this.datetimerange.pop() / 1000;
                 console.log(startTimestamp + "-" + endTimestamp);
-                this.shortMessageVO.imageUrl = this.fileVO.url;
-                console.log("***fileVO.url" + this.fileVO.url);
-                console.log("***shortMessageVO.imageUrl" + this.shortMessageVO.imageUrl)
+                console.log("*****shortMessageVO.type:" + this.shortMessageVO.type);
+                if (this.shortMessageVO.type == 1) {
+                    this.shortMessageVO.imageUrl = "";
+                    console.log("插入类型为文字")
+                } else if (this.shortMessageVO.type == 2) {
+                    this.shortMessageVO.content = "";
+                    this.shortMessageVO.imageUrl = this.fileVO.url;
+                    console.log("插入类型为图片");
+                    console.log("***fileVO.url" + this.fileVO.url);
+                    console.log("***shortMessageVO.imageUrl" + this.shortMessageVO.imageUrl)
+                }
                 this.shortMessageVO.startTime = startTimestamp;
                 this.shortMessageVO.endTime = endTimestamp;
                 console.log("***addShortMessage:" + this.shortMessageVO);
                 shortmessage.addShortMessage(this.shortMessageVO).then(res => {
                     this.getShortMessageList(this.pageCurrent);
-                    console.log(res);
                     this.$message({
                         type: 'success',
                         message: '添加成功!'
                     });
                     this.dialogFormVisible = false;
                     this.dialogVisible = false;
-                    this.fileVO = {url: "", md5: "", size: null};
-                    this.shortMessageVO.content = ""
+                    this.resetObj();
                 }).catch(error => {
                     console.log(error)
                 });
             },
             updateShortMessage() {
-                shortmessage.updateShortMessage()
+                let endTimestamp = this.datetimerange.pop() / 1000;
+                let startTimestamp = this.datetimerange.pop() / 1000;
+                console.log(startTimestamp + "-" + endTimestamp);
+                if (this.shortMessageVO.type == 1) {
+                    this.shortMessageVO.imageUrl = "";
+                } else if (this.shortMessageVO.type == 2) {
+                    this.shortMessageVO.content = "";
+                    this.shortMessageVO.imageUrl = this.fileVO.url;
+                    console.log("***fileVO.url" + this.fileVO.url);
+                    console.log("***shortMessageVO.imageUrl" + this.shortMessageVO.imageUrl)
+                }
+                this.shortMessageVO.startTime = startTimestamp;
+                this.shortMessageVO.endTime = endTimestamp;
+                console.log("***addShortMessage:" + this.shortMessageVO);
+                shortmessage.updateShortMessage(this.shortMessageVO)
+                    .then(response => {
+                        this.getShortMessageList(this.pageCurrent);
+                        this.$message({
+                            type: 'success',
+                            message: '修改成功!'
+                        });
+                        this.dialogFormVisible = false;
+                        this.dialogVisible = false;
+                        this.resetObj();
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
             },
             deleteById(id) {
                 this.$confirm('确认删除该记录？', '提示', {
@@ -295,13 +377,16 @@
                 let imagePre = images.slice(0, index);
                 let imageSuf = images.slice(index);
                 return imageSuf.push(imagePre);
-            },
+            }
         },
         computed: {
             //通过该计算属性得到当前页所有图片地址集合，用于遍历
             // srcList() {
             //     return this.records.map(item => item.imageUrl);
             // }
+            getNameByUrl() {
+                return this.fileVO.url.slice(this.fileVO.url.lastIndexOf("/") + 34);
+            }
         },
         watch: {
             //添加需要展示的属性
@@ -312,10 +397,14 @@
 
                     // record.startDatetime = timeutils.toDatetime(record.startTime);
                     // record.endDatetime = timeutils.toDatetime(record.endTime);
-                    record.startDatetime = moment(record.startTime * 1000).format('YYYY-MM-DD HH:mm:ss')
-                    record.endDatetime = moment(record.endTime * 1000).format('YYYY-MM-DD HH:mm:ss')
+                    record.startDatetime = moment(record.startTime * 1000).format('YYYY-MM-DD HH:mm:ss');
+                    record.endDatetime = moment(record.endTime * 1000).format('YYYY-MM-DD HH:mm:ss');
 
                     record.typeName = (record.type === 1 ? '文字' : '图片')
+
+                    if (record.imageUrl != null && record.imageUrl.length > 33) {
+                        record.name = record.imageUrl.slice(record.imageUrl.lastIndexOf("/") + 34);
+                    }
                 })
             }
         }

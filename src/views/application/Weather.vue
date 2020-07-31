@@ -1,6 +1,7 @@
 <template>
     <div class="weather">
 
+        <br>
         <el-button type="primary" @click="addWeather">添加当天天气</el-button>
 
         <div style="margin-top: 20px;">

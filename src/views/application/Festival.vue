@@ -4,15 +4,15 @@
         <br>
         <!-- 添加记录 -->
         <el-button type="primary" @click="dialogFormVisible = true">添加节日播报记录</el-button>
-        <el-dialog title="添加节日播报记录" :visible.sync="dialogFormVisible">
+        <el-dialog title="添加节日播报记录" :visible.sync="dialogFormVisible" @close="resetObj">
             <el-form label-position="right" label-width="20px" :model="festivalBroadcast">
                 <el-form-item label="播报日期" label-width="100px">
-                    <el-date-picker
-                            v-model="festivalBroadcast.broadcastDay"
-                            type="date"
-                            placeholder="选择日期"
-                            format="yyyy-MM-dd"
-                            value-format="yyyy-MM-dd">
+                    <el-date-picker style="width: 128px"
+                                    v-model="festivalBroadcast.broadcastDay"
+                                    type="date"
+                                    placeholder="选择日期"
+                                    format="yyyy-MM-dd"
+                                    value-format="yyyy-MM-dd">
                     </el-date-picker>
                 </el-form-item>
 
@@ -30,11 +30,42 @@
                     </el-dialog>
                 </el-form-item>
 
+                <el-form-item label="文件名称" v-if="fileVO.url !== ''" label-width="100px">
+                    <el-input
+                            type="textarea"
+                            v-model="getNameByUrl"
+                            :disabled="true">
+                    </el-input>
+                </el-form-item>
+
+                <el-form-item label="文件地址" v-if="fileVO.url !== ''" label-width="100px">
+                    <el-input
+                            type="textarea"
+                            v-model="fileVO.url"
+                            :disabled="true">
+                    </el-input>
+                </el-form-item>
+
+                <el-form-item label="文件md5值" v-if="fileVO.md5 !== ''" label-width="100px">
+                    <el-input
+                            type="textarea"
+                            v-model="fileVO.md5"
+                            :disabled="true">
+                    </el-input>
+                </el-form-item>
+
+                <el-form-item label="文件大小" v-if="fileVO.size !== null" label-width="100px">
+                    <el-input
+                            type="textarea"
+                            v-model="fileVO.size"
+                            :disabled="true">
+                    </el-input>
+                </el-form-item>
 
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addHoliday">确 定</el-button>
+                <el-button @click="cancelOperation">取 消</el-button>
+                <el-button type="primary" @click="addOrUpdate">确 定</el-button>
                 <!--                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
             </div>
         </el-dialog>
@@ -75,13 +106,13 @@
                     </el-form>
                 </template>
             </el-table-column>
-            <el-table-column label="序号" fixed prop="index"/>
+            <el-table-column label="序号" fixed prop="index" width="70px"/>
             <el-table-column label="播报日期" prop="broadcastDay"/>
             <el-table-column label="文件名" prop="name"/>
             <el-table-column label="创建时间" prop="createTime"/>
             <el-table-column fixed="right" label="操作">
                 <template slot-scope="scope">
-                    <el-button @click="updateHoliday()" type="text" size="small">编辑</el-button>
+                    <el-button @click="setObj(scope.row.id)" type="text" size="small">编辑</el-button>
                     <el-button @click="deleteById(scope.row.id)" type="text" size="small">删除</el-button>
                 </template>
             </el-table-column>
@@ -124,7 +155,7 @@
                     broadcastDay: "",
                     url: "",
                     timestamp: null,
-                    md5: null,
+                    md5: "",
                     size: null,
                 },
                 //文件上传
@@ -158,11 +189,49 @@
                     console.log(error)
                 })
             },
+            addOrUpdate() {
+                if (this.festivalBroadcast.id == null) {
+                    this.addHoliday()
+                } else {
+                    this.updateHoliday()
+                }
+            },
+            cancelOperation() {
+                this.dialogFormVisible = false;
+                this.resetObj();
+            },
+            setObj(id) {
+                let list = this.records.filter(record => {
+                    return record.id === id
+                });
+                let data = list.pop();
+                this.festivalBroadcast.id = data.id;
+                this.festivalBroadcast.broadcastDay = data.broadcastDay;
+                this.festivalBroadcast.url = data.url;
+                this.festivalBroadcast.timestamp = data.timestamp;
+                this.festivalBroadcast.md5 = data.md5;
+                this.fileVO.md5 = data.md5;
+                this.festivalBroadcast.size = data.size;
+                this.fileVO.size = data.size;
+                this.fileVO.url = data.url;
+                this.dialogFormVisible = true;
+            },
+            resetObj() {
+                this.festivalBroadcast = {
+                    id: null,
+                    broadcastDay: "",
+                    url: "",
+                    timestamp: null,
+                    md5: "",
+                    size: null,
+                };
+                this.fileVO = {url: "", md5: "", size: null};
+            },
             addHoliday() {
                 this.festivalBroadcast.md5 = this.fileVO.md5;
                 this.festivalBroadcast.size = this.fileVO.size;
                 this.festivalBroadcast.url = this.fileVO.url;
-                console.log(this.festivalBroadcast)
+                console.log(this.festivalBroadcast);
                 festival.addHoliday(this.festivalBroadcast).then(res => {
                     this.getHolidayList(this.pageCurrent);
                     console.log(res);
@@ -172,34 +241,47 @@
                     })
                     this.dialogFormVisible = false;
                     this.dialogVisible = false;
-                    this.fileVO.url = {url: "", md5: "", size: null};
+                    this.resetObj();
                 }).catch(error => {
                     console.log(error)
                 })
             },
             updateHoliday() {
-                festival.updateHoliday()
+                this.festivalBroadcast.url = this.fileVO.url;
+                this.festivalBroadcast.md5 = this.fileVO.md5;
+                this.festivalBroadcast.size = this.fileVO.size;
+                festival.updateHoliday(this.festivalBroadcast)
+                    .then(response => {
+                        this.getHolidayList(this.pageCurrent);
+                        this.$message({
+                            type: 'success',
+                            message: '更新成功!'
+                        });
+                        this.dialogFormVisible = false;
+                        this.dialogVisible = false;
+                        this.resetObj();
+                    }).catch(error => {
+                    console.log(error)
+                })
             },
             deleteById(id) {
                 this.$confirm('确认删除该记录？', '提示', {
                     confirmButtonClass: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
-                })
-                    .then(() => {
-                        festival.deleteHoliday(id)
-                            .then(res => {
-                                this.getHolidayList(this.pageCurrent);
-                                console.log(res);
-                                this.$message({
-                                    type: 'success',
-                                    message: '删除成功!'
-                                })
-                            }).catch(error => {
-                            console.log(error)
-                        });
-                    })
-                    .catch(error => {
+                }).then(() => {
+                    festival.deleteHoliday(id)
+                        .then(res => {
+                            this.getHolidayList(this.pageCurrent);
+                            console.log(res);
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            })
+                        }).catch(error => {
+                        console.log(error)
+                    });
+                }).catch(error => {
                         console.log(error)
                     });
             },
@@ -226,14 +308,23 @@
                 //文件上传成功时的钩子
                 let data = response.data;
                 this.fileVO.url = data.url;
-                console.log("****fileVO.url:" + this.fileVO.url);
                 this.fileVO.md5 = data.md5;
                 this.fileVO.size = data.size;
+                console.log("****文件上传成功，fileVO:[" + this.fileVO.url + "," + this.fileVO.md5 + "," + this.fileVO.size);
 
                 this.dialogVisible = false;
             }
+        }
+        ,
+        computed: {
+            getNameByUrl() {
+                if (this.fileVO.url !== "") {
+                    return this.fileVO.url.slice(this.fileVO.url.lastIndexOf("/") + 34);
+                } else {
+                    console.log("getNameByUrl中的URL为空")
+                }
+            }
         },
-        computed: {},
         watch: {
             //添加需要展示的属性
             records() {

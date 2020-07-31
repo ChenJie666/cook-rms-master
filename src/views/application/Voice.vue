@@ -98,7 +98,7 @@
                     </el-form>
                 </template>
             </el-table-column>
-            <el-table-column fixed prop="index"/>
+            <el-table-column label="序号" fixed prop="index" width="70px"/>
             <el-table-column label="MCU固件版本号" prop="mcuVersion"/>
             <el-table-column label="语音固件版本号" prop="voiceVersion"/>
             <el-table-column label="文件名" prop="name"/>
