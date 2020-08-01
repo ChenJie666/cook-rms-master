@@ -1,159 +1,166 @@
 <template>
     <div class="FestivalList">
+        <el-breadcrumb separator="/">
+            <el-breadcrumb-item><i class="el-icon-cloudy"/> 应用云</el-breadcrumb-item>
+            <el-breadcrumb-item><i class="el-icon-printer"/> 短消息列表</el-breadcrumb-item>
+        </el-breadcrumb>
 
-        <br>
-        <!-- 添加记录 -->
-        <el-button type="primary" @click="dialogFormVisible = true">添加短消息记录</el-button>
-        <el-dialog :title="getTitle" :visible.sync="dialogFormVisible" @close="resetObj" width="600px">
-            <el-form ref="form" :model="shortMessageVO">
+        <div class="container">
+            <!-- 添加记录 -->
+            <el-button type="primary" @click="dialogFormVisible = true">添加短消息记录</el-button>
+            <el-dialog :title="getTitle" :visible.sync="dialogFormVisible" @close="resetObj" width="600px">
+                <el-form ref="form" :model="shortMessageVO">
 
-                <el-form-item label="起止时间" label-width="100px">
-                    <el-date-picker
-                            v-model="datetimerange"
-                            type="datetimerange"
-                            range-separator="至"
-                            start-placeholder="开始时间"
-                            end-placeholder="结束时间"
-                            align="left"
-                            :default-time="['00:00:00','00:00:00']"
-                            value-format="timestamp">
-                    </el-date-picker>
-                </el-form-item>
+                    <el-form-item label="起止时间" label-width="100px">
+                        <el-date-picker
+                                v-model="datetimerange"
+                                type="datetimerange"
+                                range-separator="至"
+                                start-placeholder="开始时间"
+                                end-placeholder="结束时间"
+                                align="left"
+                                :default-time="['00:00:00','00:00:00']"
+                                value-format="timestamp">
+                        </el-date-picker>
+                    </el-form-item>
 
-                <el-form-item label="设备型号" prop="region" label-width="100px">
-                    <el-select v-model="shortMessageVO.deviceModel" placeholder="请选择设备型号">
-                        <el-option label="Q6" value="Q6"/>
-                    </el-select>
-                </el-form-item>
+                    <el-form-item label="设备型号" prop="region" label-width="100px">
+                        <el-select v-model="shortMessageVO.deviceModel" placeholder="请选择设备型号">
+                            <el-option label="Q6" value="Q6"/>
+                        </el-select>
+                    </el-form-item>
 
-                <el-form-item label="消息类型" prop="region" label-width="100px">
-                    <el-select v-model="shortMessageVO.type" placeholder="请选择消息类型">
-                        <el-option label="文字" value="1"/>
-                        <el-option label="图片" value="2"/>
-                    </el-select>
-                </el-form-item>
+                    <el-form-item label="消息类型" prop="region" label-width="100px">
+                        <el-select v-model="shortMessageVO.type" placeholder="请选择消息类型">
+                            <el-option label="文字" value="1"/>
+                            <el-option label="图片" value="2"/>
+                        </el-select>
+                    </el-form-item>
 
-                <el-form-item v-if="shortMessageVO.type==1" label="文本消息内容" prop="desc" label-width="100px">
-                    <el-input type="textarea" v-model="shortMessageVO.content" placeholder="请输入文本消息内容"></el-input>
-                </el-form-item>
+                    <el-form-item v-if="shortMessageVO.type==1" label="文本消息内容" prop="desc" label-width="100px">
+                        <el-input type="textarea" v-model="shortMessageVO.content" placeholder="请输入文本消息内容"></el-input>
+                    </el-form-item>
 
-                <el-form-item v-if="shortMessageVO.type==2" label="上传图片" label-width="100px">
-                    <el-upload
-                            action="/cloud/application/upload"
-                            list-type="picture-card"
-                            :on-preview="handlePictureCardPreview"
-                            :on-remove="handleRemove"
-                            :on-success="handleSuccess">
-                        <i class="el-icon-plus"/>
-                    </el-upload>
-                    <el-dialog :visible.sync="dialogVisible">
-                        <img width="100%" :src="fileVO.url" alt="">
-                    </el-dialog>
-                </el-form-item>
+                    <el-form-item v-if="shortMessageVO.type==2" label="上传图片" label-width="100px">
+                        <el-upload
+                                action="/cloud/application/upload"
+                                list-type="picture-card"
+                                :on-preview="handlePictureCardPreview"
+                                :on-remove="handleRemove"
+                                :on-success="handleSuccess">
+                            <i class="el-icon-plus"/>
+                        </el-upload>
+                        <el-dialog :visible.sync="dialogVisible">
+                            <img width="100%" :src="fileVO.url" alt="">
+                        </el-dialog>
+                    </el-form-item>
 
-                <el-form-item v-if="fileVO.url !== '' && shortMessageVO.type==2" label="图片名称" label-width="100px">
-                    <el-input type="textarea"
-                              v-model="getNameByUrl"
-                              :disabled="true">
-                    </el-input>
-                </el-form-item>
+                    <el-form-item v-if="fileVO.url !== '' && shortMessageVO.type==2" label="图片名称" label-width="100px">
+                        <el-input type="textarea"
+                                  v-model="getNameByUrl"
+                                  :disabled="true">
+                        </el-input>
+                    </el-form-item>
 
-                <el-form-item v-if="fileVO.url !== '' && shortMessageVO.type==2" label="图片地址" label-width="100px">
-                    <el-input type="textarea"
-                              v-model="fileVO.url"
-                              :disabled="true">
-                    </el-input>
-                </el-form-item>
+                    <el-form-item v-if="fileVO.url !== '' && shortMessageVO.type==2" label="图片地址" label-width="100px">
+                        <el-input type="textarea"
+                                  v-model="fileVO.url"
+                                  :disabled="true">
+                        </el-input>
+                    </el-form-item>
 
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="cancelOperation">取 消</el-button>
-                <el-button type="primary" @click="addOrUpdate()">确 定</el-button>
-            </div>
-        </el-dialog>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="cancelOperation">取 消</el-button>
+                    <el-button type="primary" @click="addOrUpdate()">确 定</el-button>
+                </div>
+            </el-dialog>
 
-        <div style="margin: 20px;"></div>
+            <div style="margin: 20px;"></div>
 
-        <!-- 展示记录 -->
-        <el-table :data="records"
-                  style="width: 100%" border>
-            <el-table-column type="expand">
-                <template slot-scope="props">
-                    <el-form label-position="right" label-width="150px" inline class="demo-table-expand">
-                        <el-form-item label="id">
-                            <span>{{props.row.id}}</span>
-                        </el-form-item>
-                        <el-form-item label="消息类型">
-                            <span>{{props.row.type}}</span>
-                        </el-form-item>
-                        <el-form-item label="文本消息内容">
-                            <span>{{props.row.content}}</span>
-                        </el-form-item>
-                        <el-form-item label="图片地址">
-                            <el-link target="_blank" type="primary" :href="props.row.imageUrl">{{props.row.imageUrl}}
-                            </el-link>
-                        </el-form-item>
-                        <el-form-item label="开始时间时间戳">
-                            <span>{{props.row.startTime}}</span>
-                        </el-form-item>
-                        <el-form-item label="结束时间时间戳">
-                            <span>{{props.row.endTime}}</span>
-                        </el-form-item>
-                        <el-form-item label="设备型号">
-                            <span>{{props.row.deviceModel}}</span>
-                        </el-form-item>
-                        <el-form-item label="创建时间">
-                            <span>{{props.row.createTime}}</span>
-                        </el-form-item>
-                    </el-form>
-                </template>
-            </el-table-column>
-            <el-table-column label="序号" fixed prop="index" width="70px"/>
-            <el-table-column label="消息类型" prop="typeName" width="100px"/>
-            <el-table-column label="内容" prop="exp" width="150px">
-                <template slot-scope="scope">
-                    <span>{{scope.row.content}}</span>
-                    <el-image
-                            style="width:80%; height: 30%"
-                            :src="scope.row.imageUrl"
-                            :preview-src-list=[scope.row.imageUrl]
-                            fit="contain"
-                            lazy>
-                        <div v-if="scope.row.imageUrl===''" slot="error" class="image-slot">
-                            <!--                                <i class="el-icon-picture-outline"/>-->
-                        </div>
-                    </el-image>
-                </template>
-            </el-table-column>
-            <el-table-column label="开始时间" prop="startDatetime"/>
-            <el-table-column label="结束时间" prop="endDatetime"/>
-            <el-table-column label="设备型号" prop="deviceModel"/>
-            <el-table-column label="创建时间" prop="createTime"/>
-            <el-table-column fixed="right" label="操作">
-                <template slot-scope="scope">
-                    <el-button @click="setObj(scope.row.id)" type="text" size="small">编辑</el-button>
-                    <el-button @click="deleteById(scope.row.id)" type="text" size="small">删除</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
+            <!-- 展示记录 -->
+            <el-table :data="records"
+                      style="width: 100%" :header-cell-style="{background: '#F6F7FB'}" border>
+                <el-table-column type="expand">
+                    <template slot-scope="props">
+                        <el-form label-position="right" label-width="150px" inline class="demo-table-expand">
+                            <el-form-item label="id">
+                                <span>{{props.row.id}}</span>
+                            </el-form-item>
+                            <el-form-item label="消息类型">
+                                <span>{{props.row.type}}</span>
+                            </el-form-item>
+                            <el-form-item label="文本消息内容">
+                                <span>{{props.row.content}}</span>
+                            </el-form-item>
+                            <el-form-item label="图片地址">
+                                <el-link target="_blank" type="primary" :href="props.row.imageUrl">
+                                    {{props.row.imageUrl}}
+                                </el-link>
+                            </el-form-item>
+                            <el-form-item label="开始时间时间戳">
+                                <span>{{props.row.startTime}}</span>
+                            </el-form-item>
+                            <el-form-item label="结束时间时间戳">
+                                <span>{{props.row.endTime}}</span>
+                            </el-form-item>
+                            <el-form-item label="设备型号">
+                                <span>{{props.row.deviceModel}}</span>
+                            </el-form-item>
+                            <el-form-item label="创建时间">
+                                <span>{{props.row.createTime}}</span>
+                            </el-form-item>
+                        </el-form>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="序号" fixed prop="index" width="70px"/>
+                <el-table-column align="center" label="消息类型" prop="typeName" width="100px"/>
+                <el-table-column align="center" label="内容" prop="exp" width="150px">
+                    <template slot-scope="scope" style="text-align: center">
+                        <div align="center" style="color: deepskyblue">{{scope.row.content}}</div>
+                        <el-image
+                                style="width:80%; height: 30%"
+                                :src="scope.row.imageUrl"
+                                :preview-src-list=[scope.row.imageUrl]
+                                fit="contain"
+                                lazy>
+                            <div v-if="scope.row.imageUrl===''" slot="error" class="image-slot">
+                                <!--                                <i class="el-icon-picture-outline"/>-->
+                            </div>
+                        </el-image>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="开始时间" prop="startDatetime"/>
+                <el-table-column align="center" label="结束时间" prop="endDatetime"/>
+                <el-table-column align="center" label="设备型号" prop="deviceModel"/>
+                <el-table-column align="center" label="创建时间" prop="createTime"/>
+                <el-table-column align="center" fixed="right" label="操作">
+                    <template slot-scope="scope">
+                        <el-button @click="setObj(scope.row.id)" type="text" icon="el-icon-edit">编辑</el-button>
+                        <el-button @click="deleteById(scope.row.id)" type="text" icon="el-icon-delete" style="color: red">删除
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
 
-        <br>
+            <br>
 
-        <!-- 分页功能 -->
-        <el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="pageCurrent"
-                :page-sizes="[10,20,50,100]"
-                :page-size="pageSize"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="total">
-        </el-pagination>
+            <!-- 分页功能 -->
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="pageCurrent"
+                    :page-sizes="[10,20,50,100]"
+                    :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total">
+            </el-pagination>
+        </div>
     </div>
 
 </template>
 
-<style scoped src="../../assets/css/application.css"/>
+<style scoped src="../../assets/css/application/application.css"/>
 
 <script>
     import shortmessage from '../../api/application/shortmessage'
@@ -384,7 +391,7 @@
             // srcList() {
             //     return this.records.map(item => item.imageUrl);
             // }
-            getTitle(){
+            getTitle() {
                 if (this.shortMessageVO.id == null) {
                     return "添加短消息记录"
                 } else {

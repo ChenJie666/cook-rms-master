@@ -42,3 +42,11 @@
 .el-form-item {
     color: cornflowerblue;
 }
+
+.container {
+    padding: 30px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 10px;
+}

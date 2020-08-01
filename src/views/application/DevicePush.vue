@@ -1,59 +1,65 @@
 <template>
     <div class="devicepush">
+        <div class="crumbs">
+            <el-breadcrumb separator="/">
+                <el-breadcrumb-item><i class="el-icon-cloudy"/> 应用云</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-s-promotion"/> 物模型推送</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
 
-        <el-switch
-                style="display: block"
-                v-model="notepushVO.Clock"
-                active-text="时钟更新"
-                active-value="1"
-                inactive-value="0">
-        </el-switch>
-        <el-switch
-                style="display: block"
-                v-model="notepushVO.Weather"
-                active-text="天气更新"
-                active-value="1"
-                inactive-value="0">
-        </el-switch>
+        <div class="container">
+            <el-switch
+                    style="display: block"
+                    v-model="notepushVO.Clock"
+                    active-text="时钟更新"
+                    active-value="1"
+                    inactive-value="0">
+            </el-switch>
+            <el-switch
+                    style="display: block"
+                    v-model="notepushVO.Weather"
+                    active-text="天气更新"
+                    active-value="1"
+                    inactive-value="0">
+            </el-switch>
 
-        <el-switch
-        style="display: block"
-        v-model="notepushVO.FestivalBroadcastPush"
-        active-text="节日播报更新"
-        active-value="1"
-        inactive-value="0">
-        </el-switch>
+            <el-switch
+                    style="display: block"
+                    v-model="notepushVO.FestivalBroadcastPush"
+                    active-text="节日播报更新"
+                    active-value="1"
+                    inactive-value="0">
+            </el-switch>
 
-        <el-switch
-        style="display: block"
-        v-model="notepushVO.ShortMessage"
-        active-text="短消息更新"
-        active-value="1"
-        inactive-value="0"
-        :disabled="smUpdatedisabled">
-        </el-switch>
+            <el-switch
+                    style="display: block"
+                    v-model="notepushVO.ShortMessage"
+                    active-text="短消息更新"
+                    active-value="1"
+                    inactive-value="0"
+                    :disabled="smUpdatedisabled">
+            </el-switch>
 
-        <el-switch
-        style="display: block"
-        v-model="notepushVO.ShortMessage"
-        active-text="短消息删除"
-        active-value="2"
-        inactive-value="0"
-        :disabled="smDeletedisabled">
-        </el-switch>
+            <el-switch
+                    style="display: block"
+                    v-model="notepushVO.ShortMessage"
+                    active-text="短消息删除"
+                    active-value="2"
+                    inactive-value="0"
+                    :disabled="smDeletedisabled">
+            </el-switch>
 
-        <el-switch
-                style="display: block"
-                v-model="notepushVO.VoiceFirmware"
-                active-text="语音固件更新"
-                active-value="1"
-                inactive-value="0">
-        </el-switch>
+            <el-switch
+                    style="display: block"
+                    v-model="notepushVO.VoiceFirmware"
+                    active-text="语音固件更新"
+                    active-value="1"
+                    inactive-value="0">
+            </el-switch>
 
-        <br>
-
-        <el-button type="primary" @click="push" round><span style="font-style: normal;color: #e9eef3;font-size: 17px">推送物模型</span></el-button>
-
+            <el-button type="primary" @click="push" round><span
+                    style="font-style: normal;color: #e9eef3;font-size: 17px">推送物模型</span></el-button>
+        </div>
     </div>
 </template>
 
@@ -107,14 +113,14 @@
         },
         computed: {},
         watch: {
-            'notepushVO.ShortMessage'(val){
+            'notepushVO.ShortMessage'(val) {
                 if (val === '1') {
-                    this.smDeletedisabled=true
+                    this.smDeletedisabled = true
                 } else if (val === '2') {
-                    this.smUpdatedisabled=true
+                    this.smUpdatedisabled = true
                 } else {
-                    this.smDeletedisabled=false;
-                    this.smUpdatedisabled=false
+                    this.smDeletedisabled = false;
+                    this.smUpdatedisabled = false
                 }
                 // console.log("***isShortMessagePush:" + this.isShortMessagePush)
                 // console.log("***smDeletedisabled:" + this.smDeletedisabled)

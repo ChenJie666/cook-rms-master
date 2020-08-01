@@ -1,121 +1,127 @@
 <template>
     <div class="">
+        <div class="crumbs">
+            <el-breadcrumb separator="/">
+                <el-breadcrumb-item><i class="el-icon-cloudy"/> 应用云</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-alarm-clock"/> 时钟管理</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
 
-        <br>
-        <el-button type="primary" @click="addClock">添加当天时钟</el-button>
+        <div class="container">
+            <el-button type="primary" @click="addClock">添加当天时钟</el-button>
 
-        <el-button type="success" @click="dialogFormVisible = true">添加自定义时钟</el-button>
-        <el-dialog :title="getTitle" :visible.sync="dialogFormVisible" @close="resetObj">
-            <el-form ref="form" :model="clockVO">
+            <el-button type="success" @click="dialogFormVisible = true">添加自定义时钟</el-button>
+            <el-dialog :title="getTitle" :visible.sync="dialogFormVisible" @close="resetObj">
+                <el-form ref="form" :model="clockVO">
 
-                <el-form-item label="时钟日期" label-width="100px">
-                    <el-date-picker
-                            v-model="clockVO.clockDay"
-                            type="date"
-                            align="left"
-                            :default-value="getDate"
-                            value-format="yyyy-MM-dd"
-                            :picker-options="pickerOptions">
-                    </el-date-picker>
-                </el-form-item>
+                    <el-form-item label="时钟日期" label-width="100px">
+                        <el-date-picker
+                                v-model="clockVO.clockDay"
+                                type="date"
+                                align="left"
+                                :default-value="getDate"
+                                value-format="yyyy-MM-dd"
+                                :picker-options="pickerOptions">
+                        </el-date-picker>
+                    </el-form-item>
 
-                <el-form-item label="阴历月" prop="region" label-width="100px">
-                    <el-select v-model="clockVO.lunarMonth" filterable placeholder="请选择阴历月">
-                        <el-option v-for="item in lunarMonth"
-                                   :key="item.value"
-                                   :value="item.value"
-                                   :label="item.value"
-                                   :disabled="item.disabled"/>
-                    </el-select>
-                </el-form-item>
+                    <el-form-item label="阴历月" prop="region" label-width="100px">
+                        <el-select v-model="clockVO.lunarMonth" filterable placeholder="请选择阴历月">
+                            <el-option v-for="item in lunarMonth"
+                                       :key="item.value"
+                                       :value="item.value"
+                                       :label="item.value"
+                                       :disabled="item.disabled"/>
+                        </el-select>
+                    </el-form-item>
 
-                <el-form-item label="阴历日" prop="region" label-width="100px">
-                    <el-select v-model="clockVO.lunarDay" filterable placeholder="请选择阴历日">
-                        <el-option v-for="item in lunarDay"
-                                   :key="item.value"
-                                   :value="item.value"
-                                   :label="item.value"
-                                   :disabled="item.disabled"/>
-                    </el-select>
-                </el-form-item>
+                    <el-form-item label="阴历日" prop="region" label-width="100px">
+                        <el-select v-model="clockVO.lunarDay" filterable placeholder="请选择阴历日">
+                            <el-option v-for="item in lunarDay"
+                                       :key="item.value"
+                                       :value="item.value"
+                                       :label="item.value"
+                                       :disabled="item.disabled"/>
+                        </el-select>
+                    </el-form-item>
 
-                <el-form-item label="星期" prop="region" label-width="100px">
-                    <el-select v-model="clockVO.week" filterable placeholder="请选择星期">
-                        <el-option
-                                v-for="item in week"
-                                :key="item.value"
-                                :value="item.value"
-                                :label="item.label"
-                                :disabled="item.disabled"/>
-                    </el-select>
-                </el-form-item>
+                    <el-form-item label="星期" prop="region" label-width="100px">
+                        <el-select v-model="clockVO.week" filterable placeholder="请选择星期">
+                            <el-option
+                                    v-for="item in week"
+                                    :key="item.value"
+                                    :value="item.value"
+                                    :label="item.label"
+                                    :disabled="item.disabled"/>
+                        </el-select>
+                    </el-form-item>
 
-                <el-form-item label="24节气" prop="region" label-width="100px">
-                    <el-select v-model="clockVO.solarTerms" filterable clearable placeholder="可搜索节气">
-                        <el-option
-                                v-for="item in solarTerm"
-                                :key="item.value"
-                                :label="item.value"
-                                :value="item.value"
-                                :disabled="item.disabled"/>
-                    </el-select>
-                </el-form-item>
+                    <el-form-item label="24节气" prop="region" label-width="100px">
+                        <el-select v-model="clockVO.solarTerms" filterable clearable placeholder="可搜索节气">
+                            <el-option
+                                    v-for="item in solarTerm"
+                                    :key="item.value"
+                                    :label="item.value"
+                                    :value="item.value"
+                                    :disabled="item.disabled"/>
+                        </el-select>
+                    </el-form-item>
 
-                <el-form-item label="节假日" prop="region" label-width="100px">
-                    <el-select v-model="clockVO.holiday" filterable clearable placeholder="可搜索节假日">
-                        <el-option
-                                v-for="item in holiday"
-                                :key="item.value"
-                                :label="item.value"
-                                :value="item.value"
-                                :disabled="item.disabled"/>
-                    </el-select>
-                </el-form-item>
+                    <el-form-item label="节假日" prop="region" label-width="100px">
+                        <el-select v-model="clockVO.holiday" filterable clearable placeholder="可搜索节假日">
+                            <el-option
+                                    v-for="item in holiday"
+                                    :key="item.value"
+                                    :label="item.value"
+                                    :value="item.value"
+                                    :disabled="item.disabled"/>
+                        </el-select>
+                    </el-form-item>
 
-            </el-form>
+                </el-form>
 
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="cancelOperation">取 消</el-button>
-                <el-button type="primary" @click="addOrUpdate()">确 定</el-button>
-            </div>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="cancelOperation">取 消</el-button>
+                    <el-button type="primary" @click="addOrUpdate()">确 定</el-button>
+                </div>
 
-        </el-dialog>
+            </el-dialog>
 
-        <div style="margin: 20px;"></div>
+            <div style="margin: 20px;"></div>
 
-        <el-table :data="records" style="width: 100%" border>
-            <el-table-column fixed label="时钟日期" prop="clockDay"/>
-            <el-table-column label="星期" prop="weekname"/>
-            <el-table-column label="阴历月" prop="lunarMonth"/>
-            <el-table-column label="阴历日" prop="lunarDay"/>
-            <el-table-column label="节假日" prop="holiday"/>
-            <el-table-column label="24节气" prop="solarTerms"/>
-            <el-table-column label="创建时间" prop="createTime"/>
-            <el-table-column fixed="right" label="操作">
-                <template slot-scope="scope">
-                    <el-button @click="setObj(scope.row.id)" type="text" size="small">编辑</el-button>
-                    <el-button @click="deleteById(scope.row.id)" type="text" size="small">删除</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
+            <el-table :data="records" style="width: 100%" :header-cell-style="{background: '#F6F7FB'}" border>
+                <el-table-column align="center" fixed label="时钟日期" prop="clockDay"/>
+                <el-table-column align="center" label="星期" prop="weekname"/>
+                <el-table-column align="center" label="阴历月" prop="lunarMonth"/>
+                <el-table-column align="center" label="阴历日" prop="lunarDay"/>
+                <el-table-column align="center" label="节假日" prop="holiday"/>
+                <el-table-column align="center" label="24节气" prop="solarTerms"/>
+                <el-table-column align="center" label="创建时间" prop="createTime"/>
+                <el-table-column align="center" fixed="right" label="操作">
+                    <template slot-scope="scope">
+                        <el-button @click="setObj(scope.row.id)" type="text" icon="el-icon-edit">编辑</el-button>
+                        <el-button @click="deleteById(scope.row.id)" type="text" icon="el-icon-delete" style="color: red">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
 
-        <br>
+            <br>
 
-        <!-- 分页功能 -->
-        <el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="pageCurrent"
-                :page-sizes="[15,30,50,100]"
-                :page-size="pageSize"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="total">
-        </el-pagination>
-
+            <!-- 分页功能 -->
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="pageCurrent"
+                    :page-sizes="[15,30,50,100]"
+                    :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total">
+            </el-pagination>
+        </div>
     </div>
 </template>
 
-<style scoped src="../../assets/css/application.css"/>
+<style scoped src="../../assets/css/application/application.css"/>
 
 <script>
     import clock from "../../api/application/clock"

@@ -99,11 +99,11 @@
                         </template>
                         <el-menu-item index="/application/clock">
                             <i class="el-icon-alarm-clock"/>
-                            <span>时钟更新</span>
+                            <span>时钟管理</span>
                         </el-menu-item>
                         <el-menu-item index="/application/weather">
                             <i class="el-icon-sunny"/>
-                            <span>天气更新</span>
+                            <span>天气管理</span>
                         </el-menu-item>
                         <el-menu-item index="/application/festival">
                             <i class="el-icon-magic-stick"/>

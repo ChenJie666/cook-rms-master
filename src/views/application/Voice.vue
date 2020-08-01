@@ -1,165 +1,171 @@
 <template>
     <div class="FestivalList">
+        <el-breadcrumb separator="/">
+            <el-breadcrumb-item><i class="el-icon-cloudy"/> 应用云</el-breadcrumb-item>
+            <el-breadcrumb-item><i class="el-icon-phone-outline"/> 语音包列表</el-breadcrumb-item>
+        </el-breadcrumb>
 
-        <br>
-        <!-- 添加记录 -->
-        <el-button type="primary" @click="dialogFormVisible = true">添加语言包</el-button>
-        <el-dialog :title="getTitle" :visible.sync="dialogFormVisible" @close="resetObj" width="600px">
+        <div class="container">
+            <!-- 添加记录 -->
+            <el-button type="primary" @click="dialogFormVisible = true">添加语言包</el-button>
+            <el-dialog :title="getTitle" :visible.sync="dialogFormVisible" @close="resetObj" width="600px">
 
-            <el-form label-position="right" label-width="130px" :model="voiceFirmwareVO">
-                <el-form-item label="MCU固件版本号">
-                    <el-input
-                            placeholder="MCU固件版本号"
-                            v-model="voiceFirmwareVO.mcuVersion"
-                            clearable>
-                    </el-input>
-                </el-form-item>
+                <el-form label-position="right" label-width="130px" :model="voiceFirmwareVO">
+                    <el-form-item label="MCU固件版本号">
+                        <el-input
+                                placeholder="MCU固件版本号"
+                                v-model="voiceFirmwareVO.mcuVersion"
+                                clearable>
+                        </el-input>
+                    </el-form-item>
 
-                <el-form-item label="语言固件版本号">
-                    <el-input
-                            placeholder="语言固件版本号"
-                            v-model="voiceFirmwareVO.voiceVersion"
-                            clearable>
-                    </el-input>
-                </el-form-item>
+                    <el-form-item label="语言固件版本号">
+                        <el-input
+                                placeholder="语言固件版本号"
+                                v-model="voiceFirmwareVO.voiceVersion"
+                                clearable>
+                        </el-input>
+                    </el-form-item>
 
-                <el-form-item label="总 分 包 数">
-                    <el-input-number
-                            v-model="voiceFirmwareVO.packageCount"
-                            :min="1"
-                            :max="10"
-                            label="分包数"/>
-                </el-form-item>
+                    <el-form-item label="总 分 包 数">
+                        <el-input-number
+                                v-model="voiceFirmwareVO.packageCount"
+                                :min="1"
+                                :max="10"
+                                label="分包数"/>
+                    </el-form-item>
 
-                <el-form-item label="每 个 包 大 小 ">
-                    <el-input
-                            placeholder="每个包大小"
-                            v-model="voiceFirmwareVO.packageSize"
-                            clearable>
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="文件上传">
-                    <el-upload
-                            action="/cloud/application/upload"
-                            list-type="picture-card"
-                            :on-preview="handlePictureCardPreview"
-                            :on-remove="handleRemove"
-                            :on-success="handleSuccess">
-                        <i class="el-icon-plus"/>
-                    </el-upload>
-                    <el-dialog :visible.sync="dialogVisible">
-                        <img width="100%" :src="fileVO.url" alt="">
-                    </el-dialog>
-                </el-form-item>
+                    <el-form-item label="每 个 包 大 小 ">
+                        <el-input
+                                placeholder="每个包大小"
+                                v-model="voiceFirmwareVO.packageSize"
+                                clearable>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item label="文件上传">
+                        <el-upload
+                                action="/cloud/application/upload"
+                                list-type="picture-card"
+                                :on-preview="handlePictureCardPreview"
+                                :on-remove="handleRemove"
+                                :on-success="handleSuccess">
+                            <i class="el-icon-plus"/>
+                        </el-upload>
+                        <el-dialog :visible.sync="dialogVisible">
+                            <img width="100%" :src="fileVO.url" alt="">
+                        </el-dialog>
+                    </el-form-item>
 
-                <el-form-item label="文件名称" v-if="fileVO.url !== ''" label-width="100px">
-                    <el-input
-                            type="textarea"
-                            v-model="getNameByUrl"
-                            :disabled="true">
-                    </el-input>
-                </el-form-item>
+                    <el-form-item label="文件名称" v-if="fileVO.url !== ''" label-width="100px">
+                        <el-input
+                                type="textarea"
+                                v-model="getNameByUrl"
+                                :disabled="true">
+                        </el-input>
+                    </el-form-item>
 
-                <el-form-item label="文件地址" v-if="fileVO.url !== ''" label-width="100px">
-                    <el-input
-                            type="textarea"
-                            v-model="fileVO.url"
-                            :disabled="true">
-                    </el-input>
-                </el-form-item>
+                    <el-form-item label="文件地址" v-if="fileVO.url !== ''" label-width="100px">
+                        <el-input
+                                type="textarea"
+                                v-model="fileVO.url"
+                                :disabled="true">
+                        </el-input>
+                    </el-form-item>
 
-                <el-form-item label="文件md5值" v-if="fileVO.md5 !== ''" label-width="100px">
-                    <el-input
-                            type="textarea"
-                            v-model="fileVO.md5"
-                            :disabled="true">
-                    </el-input>
-                </el-form-item>
+                    <el-form-item label="文件md5值" v-if="fileVO.md5 !== ''" label-width="100px">
+                        <el-input
+                                type="textarea"
+                                v-model="fileVO.md5"
+                                :disabled="true">
+                        </el-input>
+                    </el-form-item>
 
-                <el-form-item label="文件大小" v-if="fileVO.size !== null" label-width="100px">
-                    <el-input
-                            type="textarea"
-                            v-model="fileVO.size"
-                            :disabled="true">
-                    </el-input>
-                </el-form-item>
-            </el-form>
+                    <el-form-item label="文件大小" v-if="fileVO.size !== null" label-width="100px">
+                        <el-input
+                                type="textarea"
+                                v-model="fileVO.size"
+                                :disabled="true">
+                        </el-input>
+                    </el-form-item>
+                </el-form>
 
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="cancelOperation">取 消</el-button>
-                <el-button type="primary" @click="addOrUpdate">确 定</el-button>
-                <!--                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
-            </div>
-        </el-dialog>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="cancelOperation">取 消</el-button>
+                    <el-button type="primary" @click="addOrUpdate">确 定</el-button>
+                    <!--                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
+                </div>
+            </el-dialog>
 
-        <div style="margin: 20px;"></div>
+            <div style="margin: 20px;"></div>
 
-        <!-- 展示记录 -->
-        <el-table :data="records"
-                  style="width: 100%" border>
-            <el-table-column type="expand">
-                <template slot-scope="props">
-                    <el-form label-position="right" label-width="150px" inline class="demo-table-expand">
-                        <el-form-item label="id">
-                            <span>{{props.row.id}}</span>
-                        </el-form-item>
-                        <el-form-item label="MCU固件版本号">
-                            <span>{{props.row.mcuVersion}}</span>
-                        </el-form-item>
-                        <el-form-item label="语言固件版本号">
-                            <span>{{props.row.voiceVersion}}</span>
-                        </el-form-item>
-                        <el-form-item label="链接地址">
-                            <el-link target="_blank" type="primary" :href="props.row.url">{{props.row.url}}</el-link>
-                        </el-form-item>
-                        <el-form-item label="文件大小">
-                            <span>{{props.row.size}}</span>
-                        </el-form-item>
-                        <el-form-item label="MD5值">
-                            <span>{{props.row.md5}}</span>
-                        </el-form-item>
-                        <el-form-item label="总分包数">
-                            <span>{{props.row.packageCount}}</span>
-                        </el-form-item>
-                        <el-form-item label="每个包大小">
-                            <span>{{props.row.packageSize}}</span>
-                        </el-form-item>
-                        <el-form-item label="创建时间">
-                            <span>{{props.row.createTime}}</span>
-                        </el-form-item>
-                    </el-form>
-                </template>
-            </el-table-column>
-            <el-table-column label="序号" fixed prop="index" width="70px"/>
-            <el-table-column label="MCU固件版本号" prop="mcuVersion"/>
-            <el-table-column label="语音固件版本号" prop="voiceVersion"/>
-            <el-table-column label="文件名" prop="name"/>
-            <el-table-column label="创建时间" prop="createTime"/>
-            <el-table-column fixed="right" label="操作">
-                <template slot-scope="scope">
-                    <el-button @click="setObj(scope.row.id)" type="text" size="small">编辑</el-button>
-                    <el-button @click="deleteById(scope.row.id)" type="text" size="small">删除</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
+            <!-- 展示记录 -->
+            <el-table :data="records"
+                      style="width: 100%" :header-cell-style="{background: '#F6F7FB'}" border>
+                <el-table-column type="expand">
+                    <template slot-scope="props">
+                        <el-form label-position="right" label-width="150px" inline class="demo-table-expand">
+                            <el-form-item label="id">
+                                <span>{{props.row.id}}</span>
+                            </el-form-item>
+                            <el-form-item label="MCU固件版本号">
+                                <span>{{props.row.mcuVersion}}</span>
+                            </el-form-item>
+                            <el-form-item label="语言固件版本号">
+                                <span>{{props.row.voiceVersion}}</span>
+                            </el-form-item>
+                            <el-form-item label="链接地址">
+                                <el-link target="_blank" type="primary" :href="props.row.url">{{props.row.url}}
+                                </el-link>
+                            </el-form-item>
+                            <el-form-item label="文件大小">
+                                <span>{{props.row.size}}</span>
+                            </el-form-item>
+                            <el-form-item label="MD5值">
+                                <span>{{props.row.md5}}</span>
+                            </el-form-item>
+                            <el-form-item label="总分包数">
+                                <span>{{props.row.packageCount}}</span>
+                            </el-form-item>
+                            <el-form-item label="每个包大小">
+                                <span>{{props.row.packageSize}}</span>
+                            </el-form-item>
+                            <el-form-item label="创建时间">
+                                <span>{{props.row.createTime}}</span>
+                            </el-form-item>
+                        </el-form>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="序号" fixed prop="index" width="70px"/>
+                <el-table-column align="center" label="MCU固件版本号" prop="mcuVersion"/>
+                <el-table-column align="center" label="语音固件版本号" prop="voiceVersion"/>
+                <el-table-column align="center" label="文件名" prop="name"/>
+                <el-table-column align="center" label="创建时间" prop="createTime"/>
+                <el-table-column align="center" fixed="right" label="操作">
+                    <template slot-scope="scope">
+                        <el-button @click="setObj(scope.row.id)" type="text" icon="el-icon-edit">编辑</el-button>
+                        <el-button @click="deleteById(scope.row.id)" type="text" icon="el-icon-delete" style="color: red">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
 
-        <br>
+            <br>
 
-        <!-- 分页功能 -->
-        <el-pagination class="el-pagination"
-                       @size-change="handleSizeChange"
-                       @current-change="handleCurrentChange"
-                       :current-page="pageCurrent"
-                       :page-sizes="[15,30,50,100]"
-                       :page-size="pageSize"
-                       layout="total, sizes, prev, pager, next, jumper"
-                       :total="total">
-        </el-pagination>
+            <!-- 分页功能 -->
+            <el-pagination class="el-pagination"
+                           @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"
+                           :current-page="pageCurrent"
+                           :page-sizes="[15,30,50,100]"
+                           :page-size="pageSize"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="total">
+            </el-pagination>
+        </div>
     </div>
 
 </template>
 
-<style scoped src="../../assets/css/application.css"/>
+<style scoped src="../../assets/css/application/application.css"/>
 
 <script>
     import voice from '../../api/application/voice'
@@ -349,7 +355,7 @@
             }
         },
         computed: {
-            getTitle(){
+            getTitle() {
                 if (this.voiceFirmwareVO.id == null) {
                     return "添加语音记录"
                 } else {

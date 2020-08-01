@@ -1,139 +1,147 @@
 <template>
     <div class="FestivalList">
 
-        <br>
-        <!-- 添加记录 -->
-        <el-button type="primary" @click="dialogFormVisible = true">添加节日播报记录</el-button>
-        <el-dialog title="getTitle" :visible.sync="dialogFormVisible" @close="resetObj">
-            <el-form label-position="right" label-width="20px" :model="festivalBroadcast">
-                <el-form-item label="播报日期" label-width="100px">
-                    <el-date-picker style="width: 128px"
-                                    v-model="festivalBroadcast.broadcastDay"
-                                    type="date"
-                                    placeholder="选择日期"
-                                    format="yyyy-MM-dd"
-                                    value-format="yyyy-MM-dd">
-                    </el-date-picker>
-                </el-form-item>
+        <div class="crumbs">
+            <el-breadcrumb separator="/">
+                <el-breadcrumb-item><i class="el-icon-cloudy"/> 应用云</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-magic-stick"/> 节日列表</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
 
-                <el-form-item label="文件上传" label-width="100px">
-                    <el-upload
-                            action="/cloud/application/upload"
-                            list-type="picture-card"
-                            :on-preview="handlePictureCardPreview"
-                            :on-remove="handleRemove"
-                            :on-success="handleSuccess">
-                        <i class="el-icon-plus"/>
-                    </el-upload>
-                    <el-dialog :visible.sync="dialogVisible">
-                        <img width="100%" :src="fileVO.url" alt="">
-                    </el-dialog>
-                </el-form-item>
+        <div class="container">
+            <!-- 添加记录 -->
+            <el-button type="primary" @click="dialogFormVisible = true">添加节日播报记录</el-button>
+            <el-dialog title="getTitle" :visible.sync="dialogFormVisible" @close="resetObj">
+                <el-form label-position="right" label-width="20px" :model="festivalBroadcast">
+                    <el-form-item label="播报日期" label-width="100px">
+                        <el-date-picker style="width: 128px"
+                                        v-model="festivalBroadcast.broadcastDay"
+                                        type="date"
+                                        placeholder="选择日期"
+                                        format="yyyy-MM-dd"
+                                        value-format="yyyy-MM-dd">
+                        </el-date-picker>
+                    </el-form-item>
 
-                <el-form-item label="文件名称" v-if="fileVO.url !== ''" label-width="100px">
-                    <el-input
-                            type="textarea"
-                            v-model="getNameByUrl"
-                            :disabled="true">
-                    </el-input>
-                </el-form-item>
+                    <el-form-item label="文件上传" label-width="100px">
+                        <el-upload
+                                action="/cloud/application/upload"
+                                list-type="picture-card"
+                                :on-preview="handlePictureCardPreview"
+                                :on-remove="handleRemove"
+                                :on-success="handleSuccess">
+                            <i class="el-icon-plus"/>
+                        </el-upload>
+                        <el-dialog :visible.sync="dialogVisible">
+                            <img width="100%" :src="fileVO.url" alt="">
+                        </el-dialog>
+                    </el-form-item>
 
-                <el-form-item label="文件地址" v-if="fileVO.url !== ''" label-width="100px">
-                    <el-input
-                            type="textarea"
-                            v-model="fileVO.url"
-                            :disabled="true">
-                    </el-input>
-                </el-form-item>
+                    <el-form-item label="文件名称" v-if="fileVO.url !== ''" label-width="100px">
+                        <el-input
+                                type="textarea"
+                                v-model="getNameByUrl"
+                                :disabled="true">
+                        </el-input>
+                    </el-form-item>
 
-                <el-form-item label="文件md5值" v-if="fileVO.md5 !== ''" label-width="100px">
-                    <el-input
-                            type="textarea"
-                            v-model="fileVO.md5"
-                            :disabled="true">
-                    </el-input>
-                </el-form-item>
+                    <el-form-item label="文件地址" v-if="fileVO.url !== ''" label-width="100px">
+                        <el-input
+                                type="textarea"
+                                v-model="fileVO.url"
+                                :disabled="true">
+                        </el-input>
+                    </el-form-item>
 
-                <el-form-item label="文件大小" v-if="fileVO.size !== null" label-width="100px">
-                    <el-input
-                            type="textarea"
-                            v-model="fileVO.size"
-                            :disabled="true">
-                    </el-input>
-                </el-form-item>
+                    <el-form-item label="文件md5值" v-if="fileVO.md5 !== ''" label-width="100px">
+                        <el-input
+                                type="textarea"
+                                v-model="fileVO.md5"
+                                :disabled="true">
+                        </el-input>
+                    </el-form-item>
 
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="cancelOperation">取 消</el-button>
-                <el-button type="primary" @click="addOrUpdate">确 定</el-button>
-                <!--                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
-            </div>
-        </el-dialog>
+                    <el-form-item label="文件大小" v-if="fileVO.size !== null" label-width="100px">
+                        <el-input
+                                type="textarea"
+                                v-model="fileVO.size"
+                                :disabled="true">
+                        </el-input>
+                    </el-form-item>
 
-        <div style="margin: 20px;"></div>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="cancelOperation">取 消</el-button>
+                    <el-button type="primary" @click="addOrUpdate">确 定</el-button>
+                    <!--                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
+                </div>
+            </el-dialog>
 
-        <!-- 展示记录 -->
-        <el-table :data="records"
-                  style="width: 100%" border>
-            <el-table-column type="expand">
-                <template slot-scope="props">
-                    <el-form label-position="right" label-width="100px" inline class="demo-table-expand">
-                        <el-form-item label="id">
-                            <span>{{props.row.id}}</span>
-                        </el-form-item>
-                        <el-form-item label="播报日期">
-                            <span>{{props.row.broadcastDay}}</span>
-                        </el-form-item>
-                        <el-form-item label="文件名">
-                            <span>{{props.row.name}}</span>
-                        </el-form-item>
-                        <el-form-item label="链接地址">
-                            <el-link target="_blank" type="primary" :href="props.row.url">{{props.row.url}}</el-link>
-                        </el-form-item>
-                        <el-form-item label="文件大小">
-                            <span>{{props.row.size}}</span>
-                        </el-form-item>
-                        <el-form-item label="MD5值">
-                            <span>{{props.row.md5}}</span>
-                        </el-form-item>
-                        <el-form-item label="时间戳">
-                            <span>{{props.row.timestamp}}</span>
-                        </el-form-item>
-                        <el-form-item label="创建时间">
-                            <span>{{props.row.createTime}}</span>
-                        </el-form-item>
-                    </el-form>
-                </template>
-            </el-table-column>
-            <el-table-column label="序号" fixed prop="index" width="70px"/>
-            <el-table-column label="播报日期" prop="broadcastDay"/>
-            <el-table-column label="文件名" prop="name"/>
-            <el-table-column label="创建时间" prop="createTime"/>
-            <el-table-column fixed="right" label="操作">
-                <template slot-scope="scope">
-                    <el-button @click="setObj(scope.row.id)" type="text" size="small">编辑</el-button>
-                    <el-button @click="deleteById(scope.row.id)" type="text" size="small">删除</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
+            <div style="margin: 20px;"></div>
 
-        <br>
+            <!-- 展示记录 -->
+            <el-table :data="records"
+                      style="width: 100%" :header-cell-style="{background: '#F6F7FB'}" border>
+                <el-table-column type="expand">
+                    <template slot-scope="props">
+                        <el-form label-position="right" label-width="100px" inline class="demo-table-expand">
+                            <el-form-item label="id">
+                                <span>{{props.row.id}}</span>
+                            </el-form-item>
+                            <el-form-item label="播报日期">
+                                <span>{{props.row.broadcastDay}}</span>
+                            </el-form-item>
+                            <el-form-item label="文件名">
+                                <span>{{props.row.name}}</span>
+                            </el-form-item>
+                            <el-form-item label="链接地址">
+                                <el-link target="_blank" type="primary" :href="props.row.url">{{props.row.url}}
+                                </el-link>
+                            </el-form-item>
+                            <el-form-item label="文件大小">
+                                <span>{{props.row.size}}</span>
+                            </el-form-item>
+                            <el-form-item label="MD5值">
+                                <span>{{props.row.md5}}</span>
+                            </el-form-item>
+                            <el-form-item label="时间戳">
+                                <span>{{props.row.timestamp}}</span>
+                            </el-form-item>
+                            <el-form-item label="创建时间">
+                                <span>{{props.row.createTime}}</span>
+                            </el-form-item>
+                        </el-form>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="序号" fixed prop="index" width="100px"/>
+                <el-table-column align="center" label="播报日期" prop="broadcastDay"/>
+                <el-table-column align="center" label="文件名" prop="name"/>
+                <el-table-column align="center" label="创建时间" prop="createTime"/>
+                <el-table-column align="center" fixed="right" label="操作">
+                    <template slot-scope="scope">
+                        <el-button @click="setObj(scope.row.id)" type="text" icon="el-icon-edit">编辑</el-button>
+                        <el-button @click="deleteById(scope.row.id)" type="text" icon="el-icon-delete" style="color: red">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
 
-        <!-- 分页功能 -->
-        <el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="pageCurrent"
-                :page-sizes="[15,30,50,100]"
-                :page-size="pageSize"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="total">
-        </el-pagination>
+            <br>
+            <!-- 分页功能 -->
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="pageCurrent"
+                    :page-sizes="[15,30,50,100]"
+                    :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total">
+            </el-pagination>
+        </div>
     </div>
 
 </template>
 
-<style scoped src="../../assets/css/application.css"/>
+<style src="../../assets/css/application/application.css"/>
 
 <script>
     import festival from '../../api/application/festival'
@@ -281,8 +289,8 @@
                         console.log(error)
                     });
                 }).catch(error => {
-                        console.log(error)
-                    });
+                    console.log(error)
+                });
             },
             //分页功能
             handleSizeChange(pageSize) {
@@ -316,7 +324,7 @@
         }
         ,
         computed: {
-            getTitle(){
+            getTitle() {
                 if (this.shortMessageVO.id == null) {
                     return "添加节日播报"
                 } else {
