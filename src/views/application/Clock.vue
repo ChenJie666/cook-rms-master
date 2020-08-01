@@ -14,7 +14,8 @@
                             type="date"
                             align="left"
                             :default-value="getDate"
-                            value-format="yyyy-MM-dd">
+                            value-format="yyyy-MM-dd"
+                            :picker-options="pickerOptions">
                     </el-date-picker>
                 </el-form-item>
 
@@ -98,12 +99,14 @@
             </el-table-column>
         </el-table>
 
+        <br>
+
         <!-- 分页功能 -->
         <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page="pageCurrent"
-                :page-sizes="[10,20,50,100]"
+                :page-sizes="[15,30,50,100]"
                 :page-size="pageSize"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="total">
@@ -112,6 +115,7 @@
     </div>
 </template>
 
+<style scoped src="../../assets/css/application.css"/>
 
 <script>
     import clock from "../../api/application/clock"
@@ -122,7 +126,7 @@
         data() {
             return ({
                 pageCurrent: 1,
-                pageSize: 10,
+                pageSize: 15,
                 total: 0,
                 pages: 0,
                 records: [],
@@ -158,7 +162,29 @@
                     value: '请选择节假日',
                     disabled: true
                 }, {value: '元旦节'}, {value: '春节'}, {value: '清明节'}, {value: '劳动节'}, {value: '端午节'}, {value: '中秋节'}, {value: '国庆节'}],
-                dialogFormVisible: false
+                dialogFormVisible: false,
+                pickerOptions: {
+                    shortcuts: [{
+                        text: '今天',
+                        onClick(picker) {
+                            picker.$emit('pick', new Date());
+                        }
+                    }, {
+                        text: '昨天',
+                        onClick(picker) {
+                            const date = new Date();
+                            date.setTime(date.getTime() - 3600 * 1000 * 24);
+                            picker.$emit('pick', date);
+                        }
+                    }, {
+                        text: '一周前',
+                        onClick(picker) {
+                            const date = new Date();
+                            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', date);
+                        }
+                    }]
+                }
             })
         },
         created() {

@@ -1,8 +1,23 @@
 <template>
     <div class="weather">
 
-        <br>
-        <el-button type="primary" @click="addWeather">添加当天天气</el-button>
+        <div style="margin-top: 20px;">
+            <el-button type="primary" @click="addWeather">添加当天天气</el-button>
+            <el-button type="success" @click="getWeather(1,searchFactor)" style="margin-left: 70px">查询天气</el-button>
+            <el-button type="info" @click="this.clearSearchFactor">清空条件</el-button>
+            <el-date-picker style="width: 150px"
+                            v-model="searchFactor.searchDate"
+                            align="right"
+                            type="date"
+                            value-format="yyyy-MM-dd"
+                            placeholder="选择日期"
+                            :picker-options="pickerOptions">
+            </el-date-picker>
+
+            <el-input style="margin-right: 10px;width: 150px" placeholder="输入城市" v-model="searchFactor.searchCity"
+                      clearable/>
+
+        </div>
 
         <el-dialog title="更新天气记录" :visible.sync="dialogFormVisible">
             <el-form ref="form" :model="weatherVO">
@@ -61,10 +76,12 @@
 
                 <el-form-item label="天气描述" prop="region" label-width="100px">
                     <el-select v-model="weatherVO.weatherId" filterable clearable placeholder="选择天气">
-                        <el-option value=0 label="晴"/>
-                        <el-option value=1 label="多云"/>
-                        <el-option value=2 label="阴"/>
+                        <el-option value=1 label="晴"/>
+                        <el-option value=2 label="多云"/>
                         <el-option value=3 label="雨"/>
+                        <el-option value=4 label="雪"/>
+                        <el-option value=5 label="阴"/>
+                        <el-option value=0 label="未知"/>
                     </el-select>
                 </el-form-item>
 
@@ -82,25 +99,8 @@
 
         </el-dialog>
 
-        <div style="margin-top: 20px;">
-            <el-button type="success" @click="getWeather(1,searchFactor)">查询天气</el-button>
-            <el-button type="info" @click="this.clearSearchFactor">清空条件</el-button>
-            <el-date-picker style="width: 150px"
-                            v-model="searchFactor.searchDate"
-                            align="right"
-                            type="date"
-                            value-format="yyyy-MM-dd"
-                            placeholder="选择日期"
-                            :picker-options="pickerOptions">
-            </el-date-picker>
 
-            <el-input style="margin-right: 10px;width: 150px" placeholder="输入城市" v-model="searchFactor.searchCity"
-                      clearable/>
-
-        </div>
-
-
-        <div style="margin: 10px;"></div>
+<!--        <div style="margin: 10px;"></div>-->
 
         <el-table :data="records" style="width: 100%" border>
             <el-table-column label="日期" prop="weatherDay"/>
@@ -120,12 +120,14 @@
             </el-table-column>
         </el-table>
 
+        <br>
+
         <!-- 分页功能 -->
         <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page="pageCurrent"
-                :page-sizes="[10,20,50,100]"
+                :page-sizes="[15,30,50,100]"
                 :page-size="pageSize"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="total">
@@ -145,7 +147,7 @@
         data() {
             return ({
                 pageCurrent: 1,
-                pageSize: 10,
+                pageSize: 15,
                 total: 0,
                 pages: 0,
                 records: [],
@@ -296,17 +298,20 @@
         watch: {
             'weatherVO.weatherId'() {
                 switch (this.weatherVO.weatherId) {
-                    case "0":
+                    case "1":
                         this.weatherVO.desc = "晴";
                         break;
-                    case "1":
-                        this.weatherVO.desc = "多云";
-                        break;
                     case "2":
-                        this.weatherVO.desc = "阴";
+                        this.weatherVO.desc = "多云";
                         break;
                     case "3":
                         this.weatherVO.desc = "雨";
+                        break;
+                    case "4":
+                        this.weatherVO.desc = "雪";
+                        break;
+                    default:
+                        this.weatherVO.desc = "阴";
                         break;
                 }
             }

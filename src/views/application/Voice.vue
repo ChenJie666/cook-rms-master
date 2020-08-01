@@ -4,7 +4,7 @@
         <br>
         <!-- 添加记录 -->
         <el-button type="primary" @click="dialogFormVisible = true">添加语言包</el-button>
-        <el-dialog title="getTitle" :visible.sync="dialogFormVisible" @close="resetObj" width="600px">
+        <el-dialog :title="getTitle" :visible.sync="dialogFormVisible" @close="resetObj" width="600px">
 
             <el-form label-position="right" label-width="130px" :model="voiceFirmwareVO">
                 <el-form-item label="MCU固件版本号">
@@ -150,7 +150,7 @@
                        @size-change="handleSizeChange"
                        @current-change="handleCurrentChange"
                        :current-page="pageCurrent"
-                       :page-sizes="[10,20,50,100]"
+                       :page-sizes="[15,30,50,100]"
                        :page-size="pageSize"
                        layout="total, sizes, prev, pager, next, jumper"
                        :total="total">
@@ -173,7 +173,7 @@
                 pages: 0,
                 records: [],
                 pageCurrent: 1,
-                pageSize: 10,
+                pageSize: 15,
                 //添加&更新
                 voiceFirmwareVO: {
                     id: null,
@@ -350,7 +350,7 @@
         },
         computed: {
             getTitle(){
-                if (this.shortMessageVO.id == null) {
+                if (this.voiceFirmwareVO.id == null) {
                     return "添加语音记录"
                 } else {
                     return "修改语音记录"

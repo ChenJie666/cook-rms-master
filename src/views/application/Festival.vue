@@ -124,7 +124,7 @@
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page="pageCurrent"
-                :page-sizes="[10,20,50,100]"
+                :page-sizes="[15,30,50,100]"
                 :page-size="pageSize"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="total">
@@ -147,7 +147,7 @@
                 pages: 0,
                 records: [],
                 pageCurrent: 1,
-                pageSize: 10,
+                pageSize: 15,
                 //添加&更新
                 festivalBroadcast: {
                     id: null,

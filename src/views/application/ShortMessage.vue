@@ -234,7 +234,7 @@
                 });
                 let data = list.pop();
                 this.shortMessageVO.id = data.id;
-                this.shortMessageVO.type = data.type;
+                this.shortMessageVO.type = data.type + '';
                 this.shortMessageVO.content = data.content;
                 this.shortMessageVO.imageUrl = data.imageUrl;
                 this.fileVO.url = data.imageUrl;
