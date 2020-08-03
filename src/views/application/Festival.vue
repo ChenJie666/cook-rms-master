@@ -1,12 +1,9 @@
 <template>
-    <div class="FestivalList">
-
-        <div class="crumbs">
-            <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-cloudy"/> 应用云</el-breadcrumb-item>
-                <el-breadcrumb-item><i class="el-icon-magic-stick"/> 节日列表</el-breadcrumb-item>
-            </el-breadcrumb>
-        </div>
+    <div class="">
+        <el-breadcrumb separator="/">
+            <el-breadcrumb-item><i class="el-icon-cloudy"/> 应用云</el-breadcrumb-item>
+            <el-breadcrumb-item><i class="el-icon-magic-stick"/> 节日列表</el-breadcrumb-item>
+        </el-breadcrumb>
 
         <div class="container">
             <!-- 添加记录 -->
@@ -120,7 +117,9 @@
                 <el-table-column align="center" fixed="right" label="操作">
                     <template slot-scope="scope">
                         <el-button @click="setObj(scope.row.id)" type="text" icon="el-icon-edit">编辑</el-button>
-                        <el-button @click="deleteById(scope.row.id)" type="text" icon="el-icon-delete" style="color: red">删除</el-button>
+                        <el-button @click="deleteById(scope.row.id)" type="text" icon="el-icon-delete"
+                                   style="color: red">删除
+                        </el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -141,7 +140,7 @@
 
 </template>
 
-<style src="../../assets/css/application/application.css"/>
+<style scoped src="../../assets/css/application/application.css"/>
 
 <script>
     import festival from '../../api/application/festival'

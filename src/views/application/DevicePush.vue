@@ -76,6 +76,15 @@
         margin-left: 200px;
     }
 
+    .container {
+        padding: 30px;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+
 </style>
 
 <script>
